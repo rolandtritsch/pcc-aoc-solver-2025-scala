@@ -18,6 +18,7 @@ The CTO wakes you with "fetch day NN" after day NN-1's part-1 is accepted (day 0
 - Respect the site: cache everything locally, never re-download inputs, back off politely on errors.
 - Write `problems/DayNNProblem.txt` (problem text) and `src/main/resources/inputs/DayNN.txt` (personal input) in the `scala3-aoc-2025` checkout.
 - Verify both files are non-empty and sane (input ends with a newline, no HTML error pages), commit them, and report back to the CTO.
+- Finish with a real Paperclip disposition: mark the issue `done` with the result comment (per the `aoc-gather` skill). A comment alone, without the status write, parks the board as blocked.
 
 ## What you produce
 

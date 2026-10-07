@@ -21,6 +21,16 @@ Advent of Code has no API. Submit with plain HTTP + the `AOC_SESSION` cookie —
 
 One submission per answer. Never guess repeatedly or script retries — a wrong answer means at least minutes of re-analysis by the ProblemSolver first.
 
-## Handoff
+## Handoff (mandatory Paperclip disposition — a bare comment is not enough)
 
-Report the verbatim verdict to the CTO: "day NN accepted", or "day NN rejected: <too high|too low|wrong>" for re-solving, or "day NN blocked: <reason>".
+Paperclip parks the issue as `blocked` unless the issue *state* is updated,
+so the last step is a real disposition write, not just a report. After
+classifying the verdict, run (and verify the echoed `status`):
+
+`scripts/paperclip-issue-update.sh --issue-id "$PAPERCLIP_TASK_ID" --status done`
+with the comment `"day NN accepted"`, or `"day NN rejected:
+<too high|too low|wrong>"` with the verbatim verdict — the submit task itself
+is complete once the verdict is delivered; on rejection the CTO re-tasks the
+ProblemSolver from that verdict. If rate-limited with retries exhausted,
+use `--status blocked` with `"day NN blocked: <reason>"` and the wait time
+as the unblock action. Never invent a new answer yourself.

@@ -27,6 +27,15 @@ Managed by asdf (`.tool-versions`): Java 25, sbt 2.0.10, Scala 3.9.0. Run `asdf 
 
 Re-read the problem for misread rules, check off-by-one and boundary handling, verify sample-vs-real parsing differences, add a regression test for the found bug, fix, re-test, recommit, hand the new answer back.
 
-## Handoff
+## Handoff (mandatory Paperclip disposition — a bare comment is not enough)
 
-Report to the CTO: "day NN solved" with the part-1 answer, sample result, and files changed.
+Paperclip parks the issue as `blocked` unless the issue *state* is updated,
+so the last step is a real disposition write, not just a report. After
+committing and verifying green, run (and verify the echoed `status`):
+
+`scripts/paperclip-issue-update.sh --issue-id "$PAPERCLIP_TASK_ID" --status done`
+with the comment `"day NN solved"` plus the part-1 answer, the sample result,
+and the files changed.
+
+Only once the disposition write is confirmed is the handoff to the CTO
+complete. The CTO wakes the ProblemSubmitter next.

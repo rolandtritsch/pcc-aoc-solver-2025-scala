@@ -22,6 +22,16 @@ Advent of Code has no API. Everything below uses plain HTTP with the user's logi
 - One request at a time, back off (minutes, not seconds) on HTTP errors or rate-limit hints.
 - Inputs are personal to the session owner — never publish them elsewhere or mix sessions.
 
-## Handoff
+## Handoff (mandatory Paperclip disposition — a bare comment is not enough)
 
-Report to the CTO: "day NN gathered" with line counts of both files, or the exact blocker (bad cookie → 400 puzzled page, network error, etc.).
+Paperclip parks the issue as `blocked` unless the issue *state* is updated,
+so the last step is a real disposition write, not just a report. After
+committing, run (and verify the echoed `status` in the response):
+
+`scripts/paperclip-issue-update.sh --issue-id "$PAPERCLIP_TASK_ID" --status done`
+with the comment `"day NN gathered"` plus line counts of both files — or, on
+a blocker, `--status blocked` with the exact blocker (bad cookie → 400
+puzzled page, network error, etc.).
+
+Only once the disposition write is confirmed is the handoff to the CTO
+complete. The CTO wakes the ProblemSolver next.
