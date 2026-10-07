@@ -1,0 +1,51 @@
+schema: paperclip/v1
+agents:
+  cto:
+    adapter:
+      type: opencode_local
+      config:
+        model: openrouter/nvidia/nemotron-3-super-120b-a12b:free
+    inputs:
+      env:
+        OPENROUTER_API_KEY:
+          kind: secret
+          requirement: optional
+  problem-gatherer:
+    adapter:
+      type: opencode_local
+      config:
+        model: openrouter/nvidia/nemotron-3-super-120b-a12b:free
+    inputs:
+      env:
+        OPENROUTER_API_KEY:
+          kind: secret
+          requirement: optional
+        AOC_SESSION:
+          kind: secret
+          requirement: optional
+  problem-solver:
+    adapter:
+      type: opencode_local
+      config:
+        model: openrouter/nvidia/nemotron-3-super-120b-a12b:free
+    inputs:
+      env:
+        OPENROUTER_API_KEY:
+          kind: secret
+          requirement: optional
+        GH_TOKEN:
+          kind: secret
+          requirement: optional
+  problem-submitter:
+    adapter:
+      type: opencode_local
+      config:
+        model: openrouter/nvidia/nemotron-3-super-120b-a12b:free
+    inputs:
+      env:
+        OPENROUTER_API_KEY:
+          kind: secret
+          requirement: optional
+        AOC_SESSION:
+          kind: secret
+          requirement: optional
