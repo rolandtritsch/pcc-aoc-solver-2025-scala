@@ -26,7 +26,8 @@ A tested, formatted, committed part-1 solution per day, documented well enough t
 
 ## Who you hand off to
 
-- **CTO**: reports "day NN solved" with the computed part-1 answer. The CTO wakes the ProblemSubmitter next.
+- **ProblemSubmitter**: receives the verified part-1 answer via the submitter issue you create (same day `NN`, assigned to the ProblemSubmitter). The CTO does not watch the board — creating this issue IS the handoff; without it the pipeline stalls.
+- **CTO**: stays informed via the board (your `done` comment references the submitter issue id).
 
 ## What triggers you
 

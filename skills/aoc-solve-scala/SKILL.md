@@ -23,9 +23,9 @@ Managed by asdf (`.tool-versions`): Java 25, sbt 2.0.10, Scala 3.9.0. Run `asdf 
 6. Verify: `sbt test` (all green), `sbt scalafmtCheckAll` (or `sbt scalafmtAll` then re-test). Run the solution: `sbt run` and record the part-1 answer.
 7. Commit early and often (`DayNN: parse input`, `DayNN: solve part1`, ...). Never commit red.
 
-## On rejection feedback (via CTO)
+## On rejection feedback (re-solve issue from the submitter)
 
-Re-read the problem for misread rules, check off-by-one and boundary handling, verify sample-vs-real parsing differences, add a regression test for the found bug, fix, re-test, recommit, hand the new answer back.
+Re-read the problem for misread rules, check off-by-one and boundary handling, verify sample-vs-real parsing differences, add a regression test for the found bug, fix, re-test, recommit, and hand the new answer back by creating a fresh submitter issue exactly as in "Next handoff" above.
 
 ## Handoff (mandatory Paperclip disposition — a bare comment is not enough)
 
@@ -37,5 +37,11 @@ committing and verifying green, run (and verify the echoed `status`):
 with the comment `"day NN solved"` plus the part-1 answer, the sample result,
 and the files changed.
 
-Only once the disposition write is confirmed is the handoff to the CTO
-complete. The CTO wakes the ProblemSubmitter next.
+## Next handoff (you create it — the CTO does not watch the board)
+
+Before that disposition write, hand the verified answer directly to the
+ProblemSubmitter by creating their issue for the same `NN` (nothing advances
+until this issue exists). Resolve the submitter's agent id by name at runtime
+(never hard-code agent UUIDs; they change on re-import):
+`SUBMITTER_ID=$(curl -s -H "Authorization: Bearer $PAPERCLIP_API_KEY" "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/agents" | python3 -c "import json,sys; print([a for a in json.load(sys.stdin) if a.get('name')=='Problem Submitter'][0]['id'])")`
+then `curl -s -X POST -H "Authorization: Bearer $PAPERCLIP_API_KEY" -H "X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID" -H "Content-Type: application/json" "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/issues"` with title `"Submit day NN part 1 answer: <ANSWER>"`, description carrying the answer, the commit hash, the sample result, and the files changed, `"status": "todo"`, and `"assigneeAgentId": "$SUBMITTER_ID"`. Verify the echoed issue id, reference it in your disposition comment, and only then mark done.
