@@ -26,7 +26,7 @@ A tested, formatted, committed part-1 solution per day, documented well enough t
 
 ## Who you hand off to
 
-- **ProblemSubmitter**: receives the verified part-1 answer via the submitter issue you create (same day `NN`, assigned to the ProblemSubmitter). The CTO does not watch the board — creating this issue IS the handoff; without it the pipeline stalls.
+- **ProblemSubmitter**: receives the verified part-1 answer via the submitter issue you create (same day `NN`, assigned to the ProblemSubmitter). The CTO does not watch the board — creating this issue IS the handoff; without it the pipeline stalls. Check the board first: if a `todo`/`in_progress` submitter issue for that day already exists, use it instead of creating a duplicate.
 - **CTO**: stays informed via the board (your `done` comment references the submitter issue id).
 
 ## What triggers you

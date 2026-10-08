@@ -37,7 +37,10 @@ as the unblock action. Never invent a new answer yourself.
 ## Next handoff (you create it — the CTO does not watch the board)
 
 Before that disposition write, create the follow-up issue so the pipeline
-advances on its own (nothing advances until this issue exists). Resolve
+advances on its own (nothing advances until this issue exists). First list
+the board and skip creation if a `todo`/`in_progress` issue for the target
+day already exists — reference the existing id instead; duplicates cause
+double downloads from adventofcode.com and double submissions. Resolve
 assignee agent ids by name at runtime (never hard-code agent UUIDs; they
 change on re-import):
 `AGENT_ID=$(curl -s -H "Authorization: Bearer $PAPERCLIP_API_KEY" "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/agents" | python3 -c "import json,sys; print([a for a in json.load(sys.stdin) if a.get('name')=='<NAME>'][0]['id'])")`
