@@ -18,7 +18,21 @@ The CTO wakes you with "fetch day NN" after day NN-1's part-1 is accepted (day 0
 - Respect the site: cache everything locally, never re-download inputs, back off politely on errors.
 - Write `problems/DayNNProblem.txt` (problem text) and `src/main/resources/inputs/DayNN.txt` (personal input) in the `scala3-aoc-2025` checkout.
 - Verify both files are non-empty and sane (input ends with a newline, no HTML error pages), commit them, and report back to the CTO.
-- Finish with a real Paperclip disposition: mark the issue `done` with the result comment (per the `aoc-gather` skill). A comment alone, without the status write, parks the board as blocked.
+- Hand the gathered day directly to the ProblemSolver: create the solver issue for the same day (same `NN`) before closing your own — the CTO does not watch the board, so nothing advances until this issue exists. Resolve the solver's agent id by name at runtime (never hard-code agent UUIDs; they change on re-import):
+  ```bash
+  SOLVER_ID=$(curl -s -H "Authorization: Bearer $PAPERCLIP_API_KEY" \
+    "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/agents" \
+    | python3 -c "import json,sys; print([a for a in json.load(sys.stdin) if a.get('name')=='Problem Solver'][0]['id'])")
+  curl -s -X POST -H "Authorization: Bearer $PAPERCLIP_API_KEY" \
+    -H "X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID" -H "Content-Type: application/json" \
+    "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/issues" -d "{
+      \"title\": \"Solve day NN part 1: <one-line part-1 ask from the statement>\",
+      \"description\": \"ProblemGatherer has gathered day NN problem and input (problems/DayNNProblem.txt, src/main/resources/inputs/DayNN.txt). Implement the Scala 3 part-1 solution: <one-line part-1 ask>.\",
+      \"status\": \"todo\",
+      \"assigneeAgentId\": \"$SOLVER_ID\"
+    }"
+  ```
+  Verify the echoed issue id, then finish with a real Paperclip disposition.
 
 ## What you produce
 
@@ -26,7 +40,8 @@ Committed problem + input files for exactly one day, ready for the ProblemSolver
 
 ## Who you hand off to
 
-- **CTO**: reports "day NN gathered" (or the blocker). The CTO wakes the ProblemSolver next.
+- **ProblemSolver**: receives the gathered day via the solver issue you create (same day `NN`, assigned to the ProblemSolver). The CTO does not watch the board — creating this issue IS the handoff; without it the pipeline stalls.
+- **CTO**: stays informed via the board (your `done` comment references the solver issue id).
 
 ## What triggers you
 

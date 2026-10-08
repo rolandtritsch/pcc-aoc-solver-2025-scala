@@ -15,6 +15,9 @@ Advent of Code has no API. Everything below uses plain HTTP with the user's logi
    `curl -fsSL --cookie "session=$AOC_SESSION" "https://adventofcode.com/2025/day/NN/input" -o src/main/resources/inputs/DayNN.txt`
    Sanity-check: non-empty, ends with newline, not HTML.
 5. Commit both files (`git add problems/DayNNProblem.txt src/main/resources/inputs/DayNN.txt && git commit -m "DayNN: gather problem and input"`).
+6. Hand the day directly to the ProblemSolver by creating their issue for the same `NN` (the CTO does not watch the board, so nothing advances until this issue exists). Read the one-line part-1 ask from the problem statement, resolve the solver agent id by name (never hard-code UUIDs), and verify the echoed issue id:
+   `SOLVER_ID=$(curl -s -H "Authorization: Bearer $PAPERCLIP_API_KEY" "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/agents" | python3 -c "import json,sys; print([a for a in json.load(sys.stdin) if a.get('name')=='Problem Solver'][0]['id'])")`
+   then `curl -s -X POST -H "Authorization: Bearer $PAPERCLIP_API_KEY" -H "X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID" -H "Content-Type: application/json" "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/issues"` with title `"Solve day NN part 1: <one-line part-1 ask>"`, description naming both committed files plus the ask, `"status": "todo"`, and `"assigneeAgentId": "$SOLVER_ID"`.
 
 ## Etiquette (site rules, non-negotiable)
 
@@ -33,5 +36,4 @@ with the comment `"day NN gathered"` plus line counts of both files — or, on
 a blocker, `--status blocked` with the exact blocker (bad cookie → 400
 puzzled page, network error, etc.).
 
-Only once the disposition write is confirmed is the handoff to the CTO
-complete. The CTO wakes the ProblemSolver next.
+Only once the solver issue exists and the disposition write is confirmed is the handoff complete. The ProblemSolver picks the day up from its assigned issue; the CTO follows the pipeline state on the board.
