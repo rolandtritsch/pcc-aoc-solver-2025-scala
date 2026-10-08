@@ -26,8 +26,8 @@ One authoritative verdict per submission, and a clean handoff either forward (ne
 
 ## Who you hand off to
 
-- **ProblemGatherer**: on acceptance (day `NN < 25`) receives the next day's fetch issue (`MM = NN+1`) that you create. Day 25 accepted ends the season — report completion instead. Check the board first: if a `todo`/`in_progress` gather issue for that day already exists, use it instead of creating a duplicate.
-- **ProblemSolver**: on rejection receives a re-solve issue (same day `NN`) that you create, carrying the verbatim verdict. Never invent a new answer yourself. Same duplicate check first.
+- **ProblemGatherer**: on acceptance (day `NN < 25`) receives the next day's fetch issue (`MM = NN+1`) that you create as a top-level issue (`"parentId": null` — never a subtask of your own issue, or days chain into each other). Day 25 accepted ends the season — report completion instead. Check the board first: if a `todo`/`in_progress` gather issue for that day already exists, use it instead of creating a duplicate.
+- **ProblemSolver**: on rejection receives a top-level re-solve issue (same day `NN`, `"parentId": null`) that you create, carrying the verbatim verdict. Never invent a new answer yourself. Same duplicate check first.
 - **CTO**: stays informed via the board (your `done` comment references the follow-up issue id).
 
 ## What triggers you

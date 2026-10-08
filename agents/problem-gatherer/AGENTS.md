@@ -40,7 +40,7 @@ Committed problem + input files for exactly one day, ready for the ProblemSolver
 
 ## Who you hand off to
 
-- **ProblemSolver**: receives the gathered day via the solver issue you create (same day `NN`, assigned to the ProblemSolver). The CTO does not watch the board — creating this issue IS the handoff; without it the pipeline stalls. Check the board first: if a `todo`/`in_progress` solver issue for that day already exists, use it instead of creating a duplicate.
+- **ProblemSolver**: receives the gathered day via the solver issue you create (same day `NN`, assigned to the ProblemSolver, top-level with `"parentId": null` — never a subtask of your own issue). The CTO does not watch the board — creating this issue IS the handoff; without it the pipeline stalls. Check the board first: if a `todo`/`in_progress` solver issue for that day already exists, use it instead of creating a duplicate.
 - **CTO**: stays informed via the board (your `done` comment references the solver issue id).
 
 ## What triggers you

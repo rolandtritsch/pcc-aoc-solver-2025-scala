@@ -49,4 +49,6 @@ then `curl -s -X POST -H "Authorization: Bearer $PAPERCLIP_API_KEY" -H "X-Paperc
 - Accepted and `NN < 25`: next day's gather issue for `MM = NN+1` (zero-padded), title `"Fetch day MM problem and input"`, description `"Day NN part-1 accepted with <ANSWER>. Fetch the next day."`, assignee `Problem Gatherer`. If `NN == 25`, the season is complete — report that instead of creating anything.
 - Rejected: rework issue for the same `NN`, title `"Re-solve day NN part 1: <too high|too low|wrong>"`, description carrying the verbatim verdict plus the submitted answer, assignee `Problem Solver`.
 
+In both cases create a top-level issue: pass `"parentId": null` explicitly — never nest it as a subtask of your own issue, or days chain into each other forever.
+
 Verify the echoed issue id, reference it in your disposition comment, and only then mark done.
