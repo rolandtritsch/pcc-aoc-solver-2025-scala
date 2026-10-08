@@ -4,7 +4,7 @@ agents:
     adapter:
       type: opencode_local
       config:
-        model: openrouter/nvidia/nemotron-3-super-120b-a12b:free
+        model: openrouter/openrouter/auto
     inputs:
       env:
         OPENROUTER_API_KEY:
@@ -14,7 +14,7 @@ agents:
     adapter:
       type: opencode_local
       config:
-        model: openrouter/nvidia/nemotron-3-super-120b-a12b:free
+        model: openrouter/openrouter/auto
     inputs:
       env:
         OPENROUTER_API_KEY:
@@ -27,7 +27,7 @@ agents:
     adapter:
       type: opencode_local
       config:
-        model: openrouter/nvidia/nemotron-3-super-120b-a12b:free
+        model: openrouter/openrouter/auto
     inputs:
       env:
         OPENROUTER_API_KEY:
@@ -40,7 +40,7 @@ agents:
     adapter:
       type: opencode_local
       config:
-        model: openrouter/nvidia/nemotron-3-super-120b-a12b:free
+        model: openrouter/openrouter/auto
     inputs:
       env:
         OPENROUTER_API_KEY:
