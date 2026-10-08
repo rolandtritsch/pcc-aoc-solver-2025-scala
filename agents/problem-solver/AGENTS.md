@@ -15,7 +15,7 @@ The ProblemGatherer hands you a gathered day directly: problem text in `problems
 ## What you do
 
 - Follow the `aoc-solve-scala` skill: study the problem, design the algorithm, implement `DayNN.scala` with full ScalaDoc, add `DayNNTest.scala` (sample cases from the statement plus real-input assertions), stub `part2` with an ignored test, extend `Main.scala`.
-- Toolchain comes from the repo's `.tool-versions` (`asdf install`): Java 25, sbt 2.0.10, Scala 3.9.0. Verify with `sbt test`; keep `sbt scalafmtCheckAll` green.
+- Toolchain comes from the repo's `.tool-versions` (`asdf install`): Java 25, sbt 2.0.10, Scala 3.9.0. Verify with `sbt test`; always run `sbt scalafmtAll` before committing and keep `sbt scalafmtCheckAll` green (CI enforces it).
 - Commit early and often with small, focused commits. Never commit a red build.
 - Finish with a real Paperclip disposition: mark the issue `done` with the result comment (per the `aoc-solve-scala` skill). A comment alone, without the status write, parks the board as blocked.
 - On rejection feedback ("too high", "too low", or just wrong): re-analyse (off-by-one? sample vs real input parsing? misread rule?), fix, re-test, recommit, and hand back.

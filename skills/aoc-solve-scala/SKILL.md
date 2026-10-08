@@ -20,7 +20,7 @@ Managed by asdf (`.tool-versions`): Java 25, sbt 2.0.10, Scala 3.9.0. Run `asdf 
    - Idiomatic Scala 3: indent syntax, immutable data, `require` preconditions, `-Werror`-clean (no unused imports).
 4. Write `src/test/scala/aoc2025/DayNNTest.scala` (munit `ScalaCheckSuite`, see `Day00Test.scala`): `readFile` test+real, `part1` test (sample → expected) and real (computed — fill in after running), `part2` test tagged `ignore` asserting the stub.
 5. Extend `src/main/scala/aoc2025/Main.scala` `@main def solve()` with the DayNN block.
-6. Verify: `sbt test` (all green), `sbt scalafmtCheckAll` (or `sbt scalafmtAll` then re-test). Run the solution: `sbt run` and record the part-1 answer.
+6. Verify: run `sbt scalafmtAll` unconditionally before committing (never assume sources are already formatted — CI fails the run otherwise), then `sbt test` (all green) and `sbt scalafmtCheckAll` (must pass). Run the solution: `sbt run` and record the part-1 answer.
 7. Commit early and often (`DayNN: parse input`, `DayNN: solve part1`, ...). Never commit red.
 
 ## On rejection feedback (re-solve issue from the submitter)
