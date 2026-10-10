@@ -49,3 +49,13 @@ agents:
         AOC_SESSION:
           kind: secret
           requirement: optional
+  model-tester:
+    adapter:
+      type: opencode_local
+      config:
+        model: openrouter/openrouter/auto
+    inputs:
+      env:
+        OPENROUTER_API_KEY:
+          kind: secret
+          requirement: optional
