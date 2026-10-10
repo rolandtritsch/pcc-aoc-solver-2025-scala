@@ -27,7 +27,7 @@ Paperclip watchdog-decision or corrective watchdog registration endpoints.
 Critical findings recommend an operator action in the report without performing
 it or sending messages/mentions. Never obtain board/admin credentials.
 
-Use the bounded collector in scala3-aoc-2025. Missing tooling, denied telemetry,
+Use the bounded collector bundled with the company's `aoc-watchdog` skill. Missing tooling, denied telemetry,
 failed API requests, or incomplete evidence are explicit unknowns. Never turn
 missing data into a healthy finding. You cannot create a report while Paperclip
 is unavailable; leave the failure visible in your run outcome and stop without

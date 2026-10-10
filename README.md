@@ -34,8 +34,9 @@ See the [shared workflow][workflow], [review skill][review], and
 The reviewer puts and commits distilled `skills/<name>/SKILL.md` and reusable
 `scripts/` in **scala3-aoc-2025**, makes them discoverable through its `AGENTS.md`,
 and records validation and commit links on the review issue. Other agents consult
-those local skills before repeating work. The company package bundles operating instructions; project-local scripts live
-in scala3-aoc-2025. A reviewer builds further scripts when repeated work justifies them.
+those local skills before repeating work. Solution scripts live in
+scala3-aoc-2025; company monitoring scripts are bundled with `aoc-watchdog`.
+A reviewer builds further solution scripts when repeated work justifies them.
 
 ## WatchDog monitoring
 
@@ -50,10 +51,10 @@ no-progress attempts. The agent has a two-minute timeout, one concurrent run,
 and disabled non-timer wake-ups to prevent self-assignment loops. Its timer starts
 disabled; deployment and activation are separate from this package update.
 
-The [WatchDog skill][watchdog] uses `scripts/aoc_watchdog.py` in the solution
-checkout. That tested, read-only collector provides bounded telemetry and a
-structured snapshot; the agent interprets it and writes the report. Deploy the
-collector alongside its `aoc_watchdog_checks.py` module before activation. See the
+The [WatchDog skill][watchdog] bundles its tested, read-only telemetry collector
+in `skills/aoc-watchdog/scripts/`. The collector provides bounded telemetry and
+a structured snapshot; the agent interprets it and writes the report. Its
+[telemetry guide][watchdog-telemetry] documents usage and validation. See the
 [design research][watchdog-design] for evidence, limits, and deployment checks.
 Missing telemetry is unknown, and reporting alone does not stop token burn.
 
@@ -167,3 +168,5 @@ workspace, and paused/heartbeat settings.
 
 [watchdog]: skills/aoc-watchdog/SKILL.md
 [watchdog-design]: skills/aoc-watchdog/references/watchdog-design.md
+
+[watchdog-telemetry]: skills/aoc-watchdog/references/telemetry.md

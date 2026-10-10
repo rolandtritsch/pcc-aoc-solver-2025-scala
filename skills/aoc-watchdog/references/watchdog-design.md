@@ -35,7 +35,7 @@ activation requires an explicit later deployment step.
 
 ## What the collector establishes
 
-The stdlib-only collector in scala3-aoc-2025 uses GET requests exclusively. It
+The stdlib-only collector bundled with the company's `aoc-watchdog` skill uses GET requests exclusively. It
 collects active issues and recently completed issues, active runs and ten recent
 runs per agent, and recorded per-agent usage since UTC midnight. It inspects at
 most three anomalous runs, up to 100 events and a 32 KiB log tail for each.
@@ -78,7 +78,7 @@ automatic shutdown would be a separate design and authorization change.
 
 ## Validation and deployment
 
-Run the fixture/transport tests in scala3-aoc-2025 with:
+Run the fixture/transport tests from the company's `aoc-watchdog` skill directory:
 
 ```bash
 python3 -B -m unittest discover -s scripts/tests -v
@@ -86,7 +86,8 @@ python3 -B -m unittest discover -s scripts/tests -v
 
 Validate the company import preview for the root relationship, skill reference,
 600-second interval, disabled non-timer wake-ups, concurrency one, and timeout
-120. Publish the project collector in the deployment checkout before activation.
+120. Verify the company-managed skill includes its collector, checks module,
+and telemetry guide before activation.
 Verify WatchDog's own runtime credentials can read the full company and write its
 self-assigned report without admin credentials. Retain existing model, secret,
 workspace, and other agents' paused settings. Enable only WatchDog's timer when

@@ -1,6 +1,6 @@
 ---
 name: aoc-watchdog
-description: Run independent ten-minute, report-only checks of AoC agent health and useful progress using a bounded project-local telemetry collector
+description: Run independent ten-minute, report-only checks of AoC agent health and useful progress using a bounded company-owned telemetry collector
 ---
 
 ## Boundaries and schedule
@@ -40,14 +40,14 @@ Read [the design research][research] for rationale and detection limits.
    prefix/company, different run ID). Extract its `watchdog-snapshot` fenced JSON
    from the description to a temporary baseline file. Reject unrelated JSON.
    If missing, collect without a baseline and report the trend limitation.
-5. Locate the assigned scala3-aoc-2025 checkout; read its `AGENTS.md` and the
-   project-local `skills/aoc-watchdog-telemetry/SKILL.md`. Run:
+5. Read [the telemetry guide][telemetry] and locate this company-managed
+   `aoc-watchdog` skill directory. Run from that directory:
 
    ```bash
    python3 -B scripts/aoc_watchdog.py --baseline /tmp/watchdog-baseline.json > /tmp/watchdog-snapshot.json
    ```
 
-   Run from that checkout. Omit `--baseline` when unavailable. The helper uses
+   Omit `--baseline` when unavailable. The helper uses
    injected Paperclip credentials and company/run/agent IDs; no board credentials,
    AoC session, browser, Scala build, or git write is needed. It collects for at
    most 60 seconds and emits at most 32 KiB. Exit 2 means partial/unknown coverage,
@@ -100,3 +100,5 @@ Missing measurements are not zero. Do not paste raw logs, private puzzle input,
 or credentials. Put the record on the task only; no Slack/email/mention alerts.
 
 [research]: references/watchdog-design.md
+
+[telemetry]: references/telemetry.md
