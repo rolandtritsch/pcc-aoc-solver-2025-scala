@@ -1,49 +1,49 @@
 ---
 name: aoc-solve-scala
-description: Implement one Advent of Code 2025 day's part-1 in idiomatic Scala 3 inside scala3-aoc-2025, with ScalaDoc, tests, formatting, and incremental git commits
+description: Implement or repair an assigned AoC 2025 part in Scala 3 with active tests, verified execution, formatting, and focused commits
 ---
 
-You work inside the `scala3-aoc-2025` checkout. Its `CLAUDE.md` is normative for layout and commands; this skill adds the per-day workflow. Reference implementation style: the 2024 solutions (Mill layout) for idiom, but this repo uses the **sbt layout** — do not copy 2024 paths blindly.
+Follow `aoc-workflow` and the `scala3-aoc-2025` checkout's `AGENTS.md` (or its
+legacy `CLAUDE.md` if that is the available guidance). Read applicable
+project-local skills and the latest relevant review findings. The 2024 repository
+is a style reference, not a path template: this repository uses sbt layout.
 
-## Toolchain
+## Implement exactly the assigned part
 
-Managed by asdf (`.tool-versions`): Java 25, sbt 2.0.10, Scala 3.9.0. Run `asdf install` if tools are missing. sbt 2 batch commands need `;` separators: `sbt "test"` or `sbt "coverage; test; coverageReport"`.
+1. Read the assigned part's rules in `problems/DayNNProblem.txt`, sample cases,
+   and cached personal input. If its rules are missing or locked, report blocked.
+   Design the algorithm and identify boundary cases before coding.
+2. Implement `part1` or `part2` in `src/main/scala/aoc2025/DayNN.scala`, package
+   `aoc2025`. Preserve working code for the other part. Replace the assigned
+   placeholder and its out-of-scope ScalaDoc; do not solve an unassigned part.
+   Keep parsing via `Source.fromResource` (paths such as `inputs/DayNN.txt`).
+   Use idiomatic Scala 3, immutable data where suitable, meaningful preconditions,
+   and ScalaDoc explaining the algorithm and complexity.
+3. Add sample resources as needed and active tests in
+   `src/test/scala/aoc2025/DayNNTest.scala`: official sample expectations,
+   independently checked boundaries, and real-input regression assertions.
+   Remove the assigned part's ignored-test tag. A real-input expected value
+   copied from the implementation is a regression check, not independent proof.
+   Preserve previous acceptance evidence and add a defect regression on repairs.
+4. Ensure `src/main/scala/aoc2025/Main.scala` executes and labels the assigned
+   part as `DayNN - partP: <answer>`. Unimplemented other parts may remain
+   placeholders until assigned, but must never be treated as solved.
+5. Verify tool versions from `.tool-versions` and `build.sbt`; use the repository's
+   asdf setup if missing. Run `sbt scalafmtAll`, `sbt test`,
+   `sbt scalafmtCheckAll`, and `sbt run`. All must succeed before committing.
+   For multiple sbt commands use one semicolon-separated command string.
+   Record the assigned part's exact answer and meaningful test results.
+6. Commit only intended files with a focused `DayNN: solve part P` or repair
+   message. Never commit a red build. Create/reuse a same-part submitter issue
+   with answer, commit, sample/edge results, verification, and upstream links.
+   Verify the handoff before marking your issue done.
 
-## Procedure (day NN, zero-padded)
+## Reviewed rejection
 
-1. Read `problems/DayNNProblem.txt` and the sample example(s) in it. Design the algorithm; note edge cases and the expected sample result(s).
-2. Create the sample input file `src/main/resources/inputs/DayNNTest.txt` from the problem statement's example.
-3. Implement `src/main/scala/aoc2025/DayNN.scala`, package `aoc2025`, object `DayNN`:
-   - `val logger`, `def readFile(filename: String)` parsing via `Source.fromResource` — callers pass paths like `"inputs/DayNN.txt"` (no `./` prefix).
-   - `def part1(...): ...` solving part 1. `def part2(...)` as an explicit out-of-scope stub (e.g. `???` or `0`) — document why in ScalaDoc.
-   - Full ScalaDoc on object and every method explaining the approach (see `Day00.scala`, the Fibonacci dummy, for the template).
-   - Idiomatic Scala 3: indent syntax, immutable data, `require` preconditions, `-Werror`-clean (no unused imports).
-4. Write `src/test/scala/aoc2025/DayNNTest.scala` (munit `ScalaCheckSuite`, see `Day00Test.scala`): `readFile` test+real, `part1` test (sample → expected) and real (computed — fill in after running), `part2` test tagged `ignore` asserting the stub.
-5. Extend `src/main/scala/aoc2025/Main.scala` `@main def solve()` with the DayNN block.
-6. Verify: run `sbt scalafmtAll` unconditionally before committing (never assume sources are already formatted — CI fails the run otherwise), then `sbt test` (all green) and `sbt scalafmtCheckAll` (must pass). Run the solution: `sbt run` and record the part-1 answer.
-7. Commit early and often (`DayNN: parse input`, `DayNN: solve part1`, ...). Never commit red.
+Read the exact verdict and review findings. Re-read rules and investigate parsing,
+bounds, overflow, and algorithm assumptions. Reproduce the bug, add a meaningful
+regression test, fix, and run the verification above. Do not merely change the
+expected answer to match a new guess. A repair creates a new submission attempt
+and later review for the same part. The CTO authorizes repairs on a later wake-up.
 
-## On rejection feedback (re-solve issue from the submitter)
-
-Re-read the problem for misread rules, check off-by-one and boundary handling, verify sample-vs-real parsing differences, add a regression test for the found bug, fix, re-test, recommit, and hand the new answer back by creating a fresh submitter issue exactly as in "Next handoff" above.
-
-## Handoff (mandatory Paperclip disposition — a bare comment is not enough)
-
-Paperclip parks the issue as `blocked` unless the issue *state* is updated,
-so the last step is a real disposition write, not just a report. After
-committing and verifying green, run (and verify the echoed `status`):
-
-`scripts/paperclip-issue-update.sh --issue-id "$PAPERCLIP_TASK_ID" --status done`
-with the comment `"day NN solved"` plus the part-1 answer, the sample result,
-and the files changed.
-
-## Next handoff (you create it — the CTO does not watch the board)
-
-Before that disposition write, hand the verified answer directly to the
-ProblemSubmitter by creating their issue for the same `NN` (nothing advances
-until this issue exists). First list the board and skip creation if a
-`todo`/`in_progress` submit issue for that day already exists — reference the
-existing id instead; duplicates cause double submissions. Resolve the submitter's agent id by name at runtime
-(never hard-code agent UUIDs; they change on re-import):
-`SUBMITTER_ID=$(curl -s -H "Authorization: Bearer $PAPERCLIP_API_KEY" "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/agents" | python3 -c "import json,sys; print([a for a in json.load(sys.stdin) if a.get('name')=='Problem Submitter'][0]['id'])")`
-then `curl -s -X POST -H "Authorization: Bearer $PAPERCLIP_API_KEY" -H "X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID" -H "Content-Type: application/json" "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/issues"` with title `"Submit day NN part 1 answer: <ANSWER>"`, description carrying the answer, the commit hash, the sample result, and the files changed, `"status": "todo"`, and `"assigneeAgentId": "$SUBMITTER_ID"`. Create it as a top-level issue: pass `"parentId": null` explicitly — never nest it as a subtask of your own issue. Verify the echoed issue id, reference it in your disposition comment, and only then mark done.
+Stop after the submitter handoff. Do not start another part or wake the CTO.

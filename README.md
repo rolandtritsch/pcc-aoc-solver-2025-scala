@@ -1,28 +1,64 @@
 # AoC Solver 2025
 
-An agent company that works through [Advent of Code 2025](https://adventofcode.com/2025) part-1 puzzles, one day at a time, implementing tested Scala 3 solutions in [scala3-aoc-2025](https://github.com/rolandtritsch/scala3-aoc-2025).
+An agent company that implements tested Scala 3 solutions for both parts of
+[Advent of Code 2025][aoc] in [scala3-aoc-2025][repo], through Day12.
 
-## Org
+## Org and workflow
 
 | Agent | Role | Reports to |
-| ----- | ---- | ---------- |
-| CTO | Owns the day-loop and pipeline state | — (root) |
-| ProblemGatherer | Fetches problem text + personal input | cto |
-| ProblemSolver | Principal Scala engineer, implements part-1 | cto |
-| ProblemSubmitter | Posts answers, routes verdicts | cto |
+| --- | --- | --- |
+| CTO | Selects one part or repair per manual/timer wake-up | — (root) |
+| ProblemGatherer | Gathers missing statement text and cached personal input | cto |
+| ProblemSolver | Implements and tests the assigned Scala 3 part | cto |
+| ProblemSubmitter | Submits answers and hands final verdicts to reviewer | cto |
+| SolutionReviewer | Reviews evidence and commits reusable project improvements | cto |
+| Model Tester | Manually assigned routing/model probe outside the pipeline | — (root) |
 
-Skills: `aoc-gather`, `aoc-solve-scala`, `aoc-submit`.
+**CTO → gather if needed → solve → submit → review → wait.**
+
+Each CTO wake-up authorizes one part: Day01 part1, Day01 part2, Day02 part1,
+and so on. Accepted and rejected attempts both end at the reviewer. Only a later
+manual or timer CTO wake-up starts the next part or a repair. Specialists do not
+wake the CTO. Day12's finale follows the authenticated site's actual instructions.
+
+The CTO runs `sbt run` and `sbt test` and checks implementations, active tests,
+acceptance evidence, and completed reviews. Printed placeholders and green
+unrelated tests cannot establish completion. Verified existing acceptances are
+retained; historical accepted work can receive a retrospective review.
+
+Skills: `aoc-workflow`, `aoc-gather`, `aoc-solve-scala`, `aoc-submit`, `aoc-review`.
+See the [shared workflow][workflow], [review skill][review], and
+[recursive improvement research][research] for the operating rules and evidence.
+The reviewer puts and commits distilled `skills/<name>/SKILL.md` and reusable
+`scripts/` in **scala3-aoc-2025**, makes them discoverable through its `AGENTS.md`,
+and records validation and commit links on the review issue. Other agents consult
+those local skills before repeating work. No scripts are bundled in this update;
+a reviewer builds them when demonstrated repeated work justifies them.
 
 ## Getting started
 
+From the `companies` checkout:
+
 ```bash
-npx paperclipai company import ./aoc-solver-2025 --dry-run
-npx paperclipai company import ./aoc-solver-2025
+paperclipai company import ./aoc-solver-2025 --target new --dry-run
+paperclipai company import ./aoc-solver-2025 --target new
 ```
 
-Secrets (stored in paperclip's vault, never in this package): `OPENROUTER_API_KEY` (all agents), `AOC_SESSION` (gatherer, submitter), optional `GH_TOKEN` (solver, for pushing).
+For an existing company, preview with `--target existing --company-id <id>` and
+an explicit collision strategy. The default `rename` strategy creates additional
+agents and skills; it does not update the existing pipeline. Review a `replace`
+preview before deployment and preserve its live model/routing/secret settings.
 
-The CTO heartbeat starts paused — drive Day01 manually first, then enable it.
+This update changes the portable package only. Importing it is a separate live
+operation. Preserve paused agents and disabled heartbeats when deploying. The CTO
+heartbeat interval is five minutes (`intervalSec: 300`), initially disabled
+(`enabled: false`); enable it only explicitly after validating the workflow.
+
+Secrets stay in Paperclip's vault: `OPENROUTER_API_KEY` for all agents,
+`AOC_SESSION` for gatherer and submitter, optional `GH_TOKEN` for the solver.
+Reviewer commits improvements locally; pushing needs separate authorization.
+SolutionReviewer uses this package's existing `opencode_local`/auto-model default;
+no live reviewer model choice or deployment is implied by the historical settings.
 
 ## Agent models
 
@@ -33,7 +69,7 @@ The following choices were applied to the live company on October 10, 2026:
 | Problem Solver | `deepseek/deepseek-v4-pro-0813` | Scala problem solving; selected after the controlled comparison with Kimi K2.7 Code. |
 | CTO | `deepseek/deepseek-v4-flash-0731` | Pipeline coordination and blocker routing. |
 | Problem Gatherer | `deepseek/deepseek-v4-flash-0731` | Downloading, checking, and committing problem and input files. |
-| Problem Submitter | `deepseek/deepseek-v4-flash-0731` | Submitting answers, interpreting verdicts, and creating follow-up tasks. |
+| Problem Submitter | `deepseek/deepseek-v4-flash-0731` | Submitting answers and interpreting verdicts. |
 
 Pro solved all three actual puzzle inputs in the comparison and cost less than
 Kimi. Flash was selected for the other roles because their work follows defined
@@ -49,7 +85,8 @@ instance does not reproduce this setup. After an import or reset, restore the
 settings below for each agent.
 
 All four agents were left **paused**, with periodic heartbeats disabled. Changing
-the models does not resume the pipeline; the recorded AoC 2025 season is complete.
+the models does not resume the pipeline. That historical model-selection record
+does not establish completion of both parts under the workflow in this package.
 
 ### OpenRouter routing
 
@@ -99,3 +136,9 @@ workspace, and paused/heartbeat settings.
 [infrastructure stack]: https://github.com/rolandtritsch/pulumi-paperclip
 [test report]: https://paperclip.tritsch.org/AOC/issues/AOC-70#document-report
 [model selection record]: https://paperclip.tritsch.org/AOC/issues/AOC-70#document-model-selection
+
+[aoc]: https://adventofcode.com/2025
+[repo]: https://github.com/rolandtritsch/scala3-aoc-2025
+[workflow]: skills/aoc-workflow/SKILL.md
+[review]: skills/aoc-review/SKILL.md
+[research]: skills/aoc-review/references/recursive-self-improvement.md

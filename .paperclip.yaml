@@ -1,6 +1,10 @@
 schema: paperclip/v1
 agents:
   cto:
+    runtime:
+      heartbeat:
+        enabled: false
+        intervalSec: 300
     adapter:
       type: opencode_local
       config:
@@ -47,6 +51,16 @@ agents:
           kind: secret
           requirement: optional
         AOC_SESSION:
+          kind: secret
+          requirement: optional
+  solution-reviewer:
+    adapter:
+      type: opencode_local
+      config:
+        model: openrouter/openrouter/auto
+    inputs:
+      env:
+        OPENROUTER_API_KEY:
           kind: secret
           requirement: optional
   model-tester:
