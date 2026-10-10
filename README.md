@@ -22,10 +22,14 @@ and so on. Accepted and rejected attempts both end at the reviewer. Only a later
 manual or timer CTO wake-up starts the next part or a repair. Specialists do not
 wake the CTO. Day12's finale follows the authenticated site's actual instructions.
 
-The CTO runs `sbt run` and `sbt test` and checks implementations, active tests,
-acceptance evidence, and completed reviews. Printed placeholders and green
-unrelated tests cannot establish completion. Verified existing acceptances are
-retained; historical accepted work can receive a retrospective review.
+The CTO synchronizes the solution branch with origin before each decision:
+fetch, fast-forward pull, push committed work, and verify a clean checkout whose
+HEAD matches the live remote. It then selects the next part or code repair solely
+from `sbt run` and `sbt test` results. Day00-only output selects Day01 part1.
+Historical tasks, acceptance records, and reviews provide context; their statuses
+never choose or block the next part. Current-cycle work is checked for duplicate
+execution after selection. Submission still confirms existing acceptance without
+posting the same answer again, and reviewer examines the current artifacts.
 
 Skills: `aoc-workflow`, `aoc-gather`, `aoc-solve-scala`, `aoc-submit`, `aoc-review`,
 `aoc-watchdog`.

@@ -16,8 +16,10 @@ goals:
 
 AoC Solver 2025 works through [Advent of Code 2025][aoc] in the
 [scala3-aoc-2025][repo] repository. The CTO selects one unfinished part on each
-manual or timer wake-up. ProblemGatherer obtains missing material, ProblemSolver
-implements the assigned part, and ProblemSubmitter submits its verified answer.
+manual or timer wake-up from `sbt run` and `sbt test` on the synchronized
+repository. Historical tasks are informational only. ProblemGatherer obtains
+missing material, ProblemSolver implements the assigned part, and
+ProblemSubmitter submits its verified answer.
 SolutionReviewer examines every accepted or rejected attempt and implements
 validated workflow improvements. Review ends the cycle; only a later CTO wake-up
 may authorize another part or a repair.

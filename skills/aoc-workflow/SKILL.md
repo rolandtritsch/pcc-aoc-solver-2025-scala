@@ -15,6 +15,17 @@ rejected attempts both end at the reviewer. Only a later CTO wake-up can start
 part2, the next day, or a repair. Order parts by day first, then part, through
 Day12; Day00 is a template. Specialist notifications are not advancement triggers.
 
+The CTO first synchronizes the solution branch with origin: fetch, fast-forward
+pull incoming commits, push outgoing committed work, and verify clean
+local/tracking/remote equality. Dirty or divergent work requires reconciliation
+without discarding files or force-pushing. Then **only `sbt run` and `sbt test`**
+determine its next part or code repair, in day/part order. Day00-only output means
+Day01 part1. Missing/failed/ambiguous relevant command evidence is unfinished;
+old task statuses, acceptances, and reviews cannot advance or block selection.
+Historical tasks provide context, and current-cycle tasks prevent duplicate
+execution only after command-based selection. Do not mistake an old blocked
+issue for current-cycle work.
+
 Read the checkout's `AGENTS.md` and applicable `skills/*/SKILL.md` before work.
 Reviewer improvements live and are committed in `scala3-aoc-2025`: reusable
 `scripts/` and `skills/<name>/SKILL.md`. Consult the latest relevant review
@@ -26,10 +37,14 @@ are gather, solve, submit, review. Carry upstream issue links, artifact paths,
 verified answer, commit, command exit codes/results, test evidence, and original
 verdict when available. Review issues identify the submission attempt/commit,
 so a new repaired answer gets a new review instead of reusing an old verdict.
+Carry the CTO decision commit and source issue through the cycle. Pre-reset
+records are informational, not current assignments or progress evidence.
 
-A normal part is complete only with a real implementation, meaningful active
-passing tests, authoritative acceptance tied to the verified answer, and a
-completed review without unresolved repair. A rejection's review can be done
+A current submission/review cycle is complete with a real implementation,
+meaningful active passing tests, authoritative acceptance tied to the verified
+answer, and a completed review. This is the specialists' delivery contract; the
+CTO selects its next computational part solely from synchronized run/test results.
+A rejection's review can be done
 while that part remains unfinished. Printed `0`, missing tests, ignored tests,
 or green unrelated tests are not completion evidence. An authenticated page
 showing the matching accepted answer may reconcile historical acceptance.
@@ -49,8 +64,9 @@ interpolated multiline shell strings.
    Resolve the recipient by its exact agent name; missing or ambiguous names
    block the handoff. Inspect descriptions and comments, not titles alone.
 2. Reuse matching active work (`todo`, `in_progress`, `in_review`, or `blocked`)
-   by year, day, part, and stage. For review, also match attempt/commit. A blocked
-   issue is an existing blocker, not permission to create a duplicate. Check
+   by current repository cycle, year, day, part, and stage. For review, also match
+   attempt/commit. A blocked issue within that current cycle is an existing
+   blocker; an old blocked task is only historical context. Check
    completed handoffs recorded on the source issue when resuming a run.
 3. If no matching work exists, `POST /api/companies/{companyId}/issues` with a
    JSON object containing `title`, `description`, `status: "todo"`, the resolved

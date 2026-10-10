@@ -22,6 +22,9 @@ agents:
         OPENROUTER_API_KEY:
           kind: secret
           requirement: optional
+        GH_TOKEN:
+          kind: secret
+          requirement: optional
   problem-gatherer:
     adapter:
       type: opencode_local
