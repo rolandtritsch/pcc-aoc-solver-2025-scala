@@ -3,7 +3,7 @@ name: AoC Solver 2025
 description: Advent of Code 2025 Scala 3 solver squad with CTO-controlled part-by-part progress and evidence-driven solution review.
 slug: aoc-solver-2025
 schema: agentcompanies/v1
-version: 0.2.0
+version: 0.3.0
 license: MIT
 authors:
   - name: Roland Tritsch
@@ -28,6 +28,9 @@ than an invented computational answer. Existing verified acceptances are retaine
 The CTO heartbeat interval is five minutes; it starts **paused** and is enabled
 only explicitly.
 Model Tester remains a manually assigned probe outside the puzzle pipeline.
+WatchDog has no manager and observes all agents every ten minutes when enabled.
+It writes a fresh self-assigned report per monitoring run and takes no corrective
+actions. Its reporting tasks are outside the puzzle pipeline.
 
 [aoc]: https://adventofcode.com/2025
 [repo]: https://github.com/rolandtritsch/scala3-aoc-2025

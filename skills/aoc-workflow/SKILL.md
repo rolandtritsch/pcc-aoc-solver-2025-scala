@@ -5,6 +5,10 @@ description: Coordinate the AoC 2025 part-by-part pipeline, evidence, duplicate-
 
 ## Cycle and evidence
 
+WatchDog is an independent observer outside this pipeline. Its self-assigned
+`WatchDog check ` report tasks do not authorize work, count as puzzle stages,
+or block CTO selection. Specialists do not assign or hand puzzle work to it.
+
 Only the CTO authorizes a part on a manual or timer wake-up. The authorized
 cycle is gather if needed → solve → submit → review → **wait**. Accepted and
 rejected attempts both end at the reviewer. Only a later CTO wake-up can start

@@ -12,6 +12,7 @@ An agent company that implements tested Scala 3 solutions for both parts of
 | ProblemSolver | Implements and tests the assigned Scala 3 part | cto |
 | ProblemSubmitter | Submits answers and hands final verdicts to reviewer | cto |
 | SolutionReviewer | Reviews evidence and commits reusable project improvements | cto |
+| WatchDog | Independent report-only health and progress observer | — (root) |
 | Model Tester | Manually assigned routing/model probe outside the pipeline | — (root) |
 
 **CTO → gather if needed → solve → submit → review → wait.**
@@ -26,14 +27,35 @@ acceptance evidence, and completed reviews. Printed placeholders and green
 unrelated tests cannot establish completion. Verified existing acceptances are
 retained; historical accepted work can receive a retrospective review.
 
-Skills: `aoc-workflow`, `aoc-gather`, `aoc-solve-scala`, `aoc-submit`, `aoc-review`.
+Skills: `aoc-workflow`, `aoc-gather`, `aoc-solve-scala`, `aoc-submit`, `aoc-review`,
+`aoc-watchdog`.
 See the [shared workflow][workflow], [review skill][review], and
 [recursive improvement research][research] for the operating rules and evidence.
 The reviewer puts and commits distilled `skills/<name>/SKILL.md` and reusable
 `scripts/` in **scala3-aoc-2025**, makes them discoverable through its `AGENTS.md`,
 and records validation and commit links on the review issue. Other agents consult
-those local skills before repeating work. No scripts are bundled in this update;
-a reviewer builds them when demonstrated repeated work justifies them.
+those local skills before repeating work. The company package bundles operating instructions; project-local scripts live
+in scala3-aoc-2025. A reviewer builds further scripts when repeated work justifies them.
+
+## WatchDog monitoring
+
+WatchDog reports to nobody and checks all company agents every ten minutes. Each
+run creates a fresh task assigned to itself, documents evidence, completes the
+report, and exits. It checks health, useful progress, suspected stalls, loops,
+failures, missing handoffs, duplicate work, and recorded consumption. Reports
+never advance or block the puzzle pipeline. V1 takes no corrective action.
+
+Balanced defaults are 20 minutes without useful progress or three repeated
+no-progress attempts. The agent has a two-minute timeout, one concurrent run,
+and disabled non-timer wake-ups to prevent self-assignment loops. Its timer starts
+disabled; deployment and activation are separate from this package update.
+
+The [WatchDog skill][watchdog] uses `scripts/aoc_watchdog.py` in the solution
+checkout. That tested, read-only collector provides bounded telemetry and a
+structured snapshot; the agent interprets it and writes the report. Deploy the
+collector alongside its `aoc_watchdog_checks.py` module before activation. See the
+[design research][watchdog-design] for evidence, limits, and deployment checks.
+Missing telemetry is unknown, and reporting alone does not stop token burn.
 
 ## Getting started
 
@@ -142,3 +164,6 @@ workspace, and paused/heartbeat settings.
 [workflow]: skills/aoc-workflow/SKILL.md
 [review]: skills/aoc-review/SKILL.md
 [research]: skills/aoc-review/references/recursive-self-improvement.md
+
+[watchdog]: skills/aoc-watchdog/SKILL.md
+[watchdog-design]: skills/aoc-watchdog/references/watchdog-design.md

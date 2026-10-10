@@ -63,6 +63,26 @@ agents:
         OPENROUTER_API_KEY:
           kind: secret
           requirement: optional
+  watchdog:
+    runtime:
+      heartbeat:
+        enabled: false
+        intervalSec: 600
+        maxConcurrentRuns: 1
+        wakeOnDemand: false
+        wakeOnAssignment: false
+        wakeOnOnDemand: false
+        wakeOnAutomation: false
+    adapter:
+      type: opencode_local
+      config:
+        model: openrouter/openrouter/auto
+        timeoutSec: 120
+    inputs:
+      env:
+        OPENROUTER_API_KEY:
+          kind: secret
+          requirement: optional
   model-tester:
     adapter:
       type: opencode_local

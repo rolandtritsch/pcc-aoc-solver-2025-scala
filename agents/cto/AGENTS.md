@@ -38,7 +38,9 @@ exit; wait for a later manual or timer wake-up to make the next decision.
    accepted historical part has no review, assign a retrospective review first.
    Missing acceptance evidence requires reconciliation by ProblemSubmitter
    against the authenticated page, not blind resubmission.
-5. If any puzzle-cycle issue is active or blocked, report its owner and exact
+5. Exclude WatchDog report tasks (`WatchDog check ` prefix, assigned to WatchDog)
+   from puzzle state, including unfinished reports. WatchDog owns no puzzle part.
+   If any puzzle-cycle issue is active or blocked, report its owner and exact
    unblock action and exit. Do not duplicate work or start another part. On a
    later wake-up with new unblock evidence, route or reactivate that same work.
 6. Otherwise choose the earliest unfinished part: Day01 part1, Day01 part2,
