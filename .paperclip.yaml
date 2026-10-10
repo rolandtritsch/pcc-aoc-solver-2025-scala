@@ -8,7 +8,15 @@ agents:
     adapter:
       type: opencode_local
       config:
-        model: openrouter/openrouter/auto
+        model: deepseek/deepseek-v4-flash-0731
+        env:
+          PAPERCLIP_OPENCODE_PROVIDERS:
+            type: plain
+            value: >-
+              {"deepseek":{"npm":"@ai-sdk/openai-compatible","name":"OpenRouter DeepSeek","options":{"baseURL":"https://openrouter.ai/api/v1","apiKey":"{env:OPENROUTER_API_KEY}"},"models":{"deepseek-v4-flash-0731":{"id":"deepseek/deepseek-v4-flash-0731"}}}}
+          PAPERCLIP_OPENCODE_SMALL_MODEL:
+            type: plain
+            value: deepseek/deepseek-v4-flash-0731
     inputs:
       env:
         OPENROUTER_API_KEY:
@@ -18,7 +26,15 @@ agents:
     adapter:
       type: opencode_local
       config:
-        model: openrouter/openrouter/auto
+        model: deepseek/deepseek-v4-flash-0731
+        env:
+          PAPERCLIP_OPENCODE_PROVIDERS:
+            type: plain
+            value: >-
+              {"deepseek":{"npm":"@ai-sdk/openai-compatible","name":"OpenRouter DeepSeek","options":{"baseURL":"https://openrouter.ai/api/v1","apiKey":"{env:OPENROUTER_API_KEY}"},"models":{"deepseek-v4-flash-0731":{"id":"deepseek/deepseek-v4-flash-0731"}}}}
+          PAPERCLIP_OPENCODE_SMALL_MODEL:
+            type: plain
+            value: deepseek/deepseek-v4-flash-0731
     inputs:
       env:
         OPENROUTER_API_KEY:
@@ -31,7 +47,15 @@ agents:
     adapter:
       type: opencode_local
       config:
-        model: openrouter/openrouter/auto
+        model: deepseek/deepseek-v4-pro-0813
+        env:
+          PAPERCLIP_OPENCODE_PROVIDERS:
+            type: plain
+            value: >-
+              {"deepseek":{"npm":"@ai-sdk/openai-compatible","name":"OpenRouter DeepSeek","options":{"baseURL":"https://openrouter.ai/api/v1","apiKey":"{env:OPENROUTER_API_KEY}"},"models":{"deepseek-v4-pro-0813":{"id":"deepseek/deepseek-v4-pro-0813"}}}}
+          PAPERCLIP_OPENCODE_SMALL_MODEL:
+            type: plain
+            value: deepseek/deepseek-v4-pro-0813
     inputs:
       env:
         OPENROUTER_API_KEY:
@@ -44,7 +68,15 @@ agents:
     adapter:
       type: opencode_local
       config:
-        model: openrouter/openrouter/auto
+        model: deepseek/deepseek-v4-flash-0731
+        env:
+          PAPERCLIP_OPENCODE_PROVIDERS:
+            type: plain
+            value: >-
+              {"deepseek":{"npm":"@ai-sdk/openai-compatible","name":"OpenRouter DeepSeek","options":{"baseURL":"https://openrouter.ai/api/v1","apiKey":"{env:OPENROUTER_API_KEY}"},"models":{"deepseek-v4-flash-0731":{"id":"deepseek/deepseek-v4-flash-0731"}}}}
+          PAPERCLIP_OPENCODE_SMALL_MODEL:
+            type: plain
+            value: deepseek/deepseek-v4-flash-0731
     inputs:
       env:
         OPENROUTER_API_KEY:
@@ -57,7 +89,15 @@ agents:
     adapter:
       type: opencode_local
       config:
-        model: openrouter/openrouter/auto
+        model: deepseek/deepseek-v4-flash-0731
+        env:
+          PAPERCLIP_OPENCODE_PROVIDERS:
+            type: plain
+            value: >-
+              {"deepseek":{"npm":"@ai-sdk/openai-compatible","name":"OpenRouter DeepSeek","options":{"baseURL":"https://openrouter.ai/api/v1","apiKey":"{env:OPENROUTER_API_KEY}"},"models":{"deepseek-v4-flash-0731":{"id":"deepseek/deepseek-v4-flash-0731"}}}}
+          PAPERCLIP_OPENCODE_SMALL_MODEL:
+            type: plain
+            value: deepseek/deepseek-v4-flash-0731
     inputs:
       env:
         OPENROUTER_API_KEY:
@@ -76,7 +116,15 @@ agents:
     adapter:
       type: opencode_local
       config:
-        model: openrouter/openrouter/auto
+        model: deepseek/deepseek-v4-flash-0731
+        env:
+          PAPERCLIP_OPENCODE_PROVIDERS:
+            type: plain
+            value: >-
+              {"deepseek":{"npm":"@ai-sdk/openai-compatible","name":"OpenRouter DeepSeek","options":{"baseURL":"https://openrouter.ai/api/v1","apiKey":"{env:OPENROUTER_API_KEY}"},"models":{"deepseek-v4-flash-0731":{"id":"deepseek/deepseek-v4-flash-0731"}}}}
+          PAPERCLIP_OPENCODE_SMALL_MODEL:
+            type: plain
+            value: deepseek/deepseek-v4-flash-0731
         timeoutSec: 120
     inputs:
       env:
@@ -87,7 +135,15 @@ agents:
     adapter:
       type: opencode_local
       config:
-        model: openrouter/openrouter/auto
+        model: deepseek/deepseek-v4-flash-0731
+        env:
+          PAPERCLIP_OPENCODE_PROVIDERS:
+            type: plain
+            value: >-
+              {"deepseek":{"npm":"@ai-sdk/openai-compatible","name":"OpenRouter DeepSeek","options":{"baseURL":"https://openrouter.ai/api/v1","apiKey":"{env:OPENROUTER_API_KEY}"},"models":{"deepseek-v4-flash-0731":{"id":"deepseek/deepseek-v4-flash-0731"}}}}
+          PAPERCLIP_OPENCODE_SMALL_MODEL:
+            type: plain
+            value: deepseek/deepseek-v4-flash-0731
     inputs:
       env:
         OPENROUTER_API_KEY:
