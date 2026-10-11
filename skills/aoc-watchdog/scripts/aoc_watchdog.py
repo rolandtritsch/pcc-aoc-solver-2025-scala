@@ -124,12 +124,16 @@ def collect(client, observer, run_id, now, baseline=None):
     safe_costs = [{k: r.get(k) for k in ("agentId", "costCents", "inputTokens", "outputTokens")} for r in costs]
     events, log_signals = {}, []
     suspects = []
+    latest = {}
+    for row in sorted(runs.values(), key=lambda r: r.get("createdAt") or "", reverse=True):
+        latest.setdefault(row.get("agentId"), row.get("id"))
     for row in runs.values():
         age = elapsed(now, row.get("lastUsefulActionAt") or row.get("startedAt") or row.get("createdAt"))
-        if row["id"] != run_id and (row.get("status") in {"failed", "timed_out"}
+        if row["id"] != run_id and (row.get("status") in {"failed", "timed_out"} and latest.get(row.get("agentId")) == row["id"]
                                     or row.get("status") == "running" and (age is not None and age >= 1200 or (row.get("continuationAttempt") or 0) >= 2)):
             suspects.append(row)
-    suspects.sort(key=lambda r: (r.get("status") != "running", r.get("createdAt") or ""))
+    suspects.sort(key=lambda r: r.get("createdAt") or "", reverse=True)
+    suspects.sort(key=lambda r: r.get("status") != "running")
     for row in suspects[:3]:
         path = "/api/heartbeat-runs/" + row["id"]
         detail = client.get(path)
@@ -145,7 +149,7 @@ def collect(client, observer, run_id, now, baseline=None):
             client.problems.append("event_window_partial:" + row["id"])
         events[row["id"]] = tail
         # Bounded log inspection exposes only pattern hints, never raw text.
-        count = row.get("logBytes")
+        count = (detail or {}).get("logBytes", row.get("logBytes")) if isinstance(detail, dict) else row.get("logBytes")
         if isinstance(count, int) and count > 0:
             log = client.get(path + "/log", {"offset": max(0, count - 32768), "limitBytes": 32768})
             if isinstance(log, dict):
@@ -154,7 +158,13 @@ def collect(client, observer, run_id, now, baseline=None):
                 for line in text.splitlines():
                     try:
                         item = json.loads(line)
+                        if isinstance(item, dict) and "chunk" in item:
+                            item = json.loads(item["chunk"])
                     except ValueError:
+                        client.problems.append("log_window_partial:" + row["id"])
+                        continue
+                    except TypeError:
+                        client.problems.append("log_structure_unavailable:" + row["id"])
                         continue
                     if not isinstance(item, dict) or item.get("type") != "tool_use":
                         continue
@@ -173,6 +183,8 @@ def collect(client, observer, run_id, now, baseline=None):
                         ])
                 if structured and not any(e.get("eventType") in {"tool.call", "tool_call", "action"} for e in tail):
                     events[row["id"]] = structured
+                if not structured and not any(e.get("eventType") in {"tool.call", "tool_call", "action"} for e in tail):
+                    client.problems.append("action_result_evidence_unavailable:" + row["id"])
                 if re.search(r"rate.?limit|too many requests|please wait", text, re.I):
                     log_signals.append({"runId": row["id"], "hint": "possible_rate_limit_wait"})
     if len(suspects) > 3:
@@ -188,7 +200,7 @@ def encode(snapshot):
     if len(raw.encode()) > MAX_OUTPUT:
         # Keep outcome and coverage honest rather than printing invalid/truncated JSON.
         snapshot = {**snapshot, "agents": [], "findings": snapshot["findings"][:20],
-                    "coverage": ["output_truncated"], "outcome": "unknown" if snapshot["outcome"] == "healthy" else snapshot["outcome"]}
+                    "coverage": sorted(set(snapshot.get("coverage", []) + ["output_truncated"])), "outcome": "unknown" if snapshot["outcome"] == "healthy" else snapshot["outcome"]}
         raw = json.dumps(snapshot, sort_keys=True, separators=(",", ":"))
     if len(raw.encode()) > MAX_OUTPUT:
         raw = json.dumps({"schemaVersion": 1, "outcome": "unknown", "coverage": ["output_truncated"], "correctiveActionsTaken": False})

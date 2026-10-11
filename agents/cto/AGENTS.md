@@ -18,11 +18,44 @@ completion does not authorize advancement: do not ask specialists to wake or
 mention you. If any specialist notification wakes you, record the status and
 exit; wait for a later manual or timer wake-up to make the next decision.
 
+## Current-cycle gate before selection
+
+At the start of every manual/timer wake, before Git, sbt, source inspection, or
+looking for another puzzle, run the read-only company helper from the injected
+`aoc-workflow` skill directory:
+
+```bash
+python3 -B scripts/aoc_cycle_gate.py
+```
+
+`AOC_CYCLE_STARTED_AT` is the board-set start of the current repository cycle.
+Tasks older than that are informational. Never infer a new cycle from HEAD or
+a changed solution commit. A reset requires the board to update this setting.
+
+- `mode: wait` or `unknown`: exit immediately. Do not rerun builds, create a
+  puzzle task, poll specialists, wake anyone, or look for more work. Existing
+  current-cycle gather/solve/submit/review tasks must reach their verified final
+  dispositions. An interrupted specialist or a stranded status is a current
+  blocker, not permission to advance. WatchDog and Model Tester are excluded.
+- `mode: repair`: only the same reviewed part may be repaired. Never advance
+  to the next part until an accepted review records no remaining puzzle repair.
+- `mode: ready`: synchronize Git, run both authority commands, and select the
+  earliest unfinished part from their evidence. Recheck the gate immediately
+  before creating work, so a concurrent handoff cannot bypass it.
+
+No subsequent part, including part2 of the same day, starts until the preceding
+part has a successful completed review tied to its solution commit and acceptance
+evidence. A green build or successful submission alone never releases the gate.
+A rejection review authorizes same-part repair only. Do not keep retrying a
+failed provider/authentication call in one wake. Report the blocker and exit.
+
 ## Synchronize before deciding
 
-On every manual or timer wake-up, perform this procedure even with an empty
-inbox. Locate the assigned `scala3-aoc-2025` checkout and read its `AGENTS.md`
-and applicable project-local skills. If unavailable, report the blocker.
+Only after the current-cycle gate permits selection, use the canonical checkout
+in `AOC_REPO_DIR` (also adapter `cwd`); do not search `.warmup`, bakeoff, scratch,
+or other clones. Read its `AGENTS.md` and applicable project-local skills.
+Never dump the environment; consume named variables inside scripts without
+printing credentials. If the checkout is unavailable, report the blocker.
 
 1. Verify the repository, branch, and upstream. Use `main` and `origin/main`
    unless the board explicitly configured another canonical solution branch.
@@ -47,14 +80,16 @@ HEAD and the working tree remain unchanged afterward; otherwise discard the
 observation and wait for a synchronized check on a later wake-up.
 
 These two commands are the sole authority for selecting the next day/part or
-code repair. Old tasks, their statuses, old submissions, prior reviews, stored
-answers, and agent memory are informational only. They cannot mark current code
+code repair after the current-cycle gate clears. Pre-cycle tasks, their
+statuses, old submissions, prior reviews, stored answers, and agent memory are
+informational only. Current-cycle reviews remain the advancement gate. They cannot mark current code
 complete, choose another part, demand a retrospective review before rebuilding,
 or block selection. Source inspection and missing problem filenames are not
 alternative progress selectors.
 
 - Exclude Day00: it is the runnable template. If the commands report only Day00,
-  select **Day01 part1**, regardless of historical tickets or acceptances.
+  select **Day01 part1**, regardless of historical tickets or acceptances, once
+  the current-cycle gate is clear.
 - Consider Day01 part1, Day01 part2, Day02 part1, etc., through Day12. Select the
   earliest part missing from the run/test evidence, explicitly unimplemented,
   failing execution, or failing its tests. Both commands must provide relevant
@@ -91,8 +126,9 @@ existing acceptances, confirming them read-only when the rebuilt answer matches.
 Historical acceptance prevents redundant submission; it never substitutes for
 current run/test evidence or changes your next-part selection. Reviewer examines
 the current attempt and artifacts, rather than requesting deleted historical
-artifacts. Review findings may explain a command-reported failure; they are not
-an independent progress gate for you.
+artifacts. Review completion and acceptance are the advancement gate. Review findings
+may explain a command-reported failure; command results still select the next
+computational part only after the gate clears.
 
 Day12 is the final day; never create Day13 work. Its noncomputational finale
 follows the authenticated completion instructions, through submitter and reviewer.

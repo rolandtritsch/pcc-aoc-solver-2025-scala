@@ -81,7 +81,13 @@ def analyze(data, baseline=None, now=None):
         problems.append("baseline_invalid_or_stale")
         baseline = None
     prior = {row["agentId"]: row for row in (baseline or {}).get("agents", [])}
-    issues = [i for i in data.get("issues", []) if not report_issue(i, data["observerId"])]
+    cycle = timestamp(data.get("cycleStartedAt"))
+    if data.get("cycleStartedAt") and cycle is None:
+        problems.append("cycle_timestamp_invalid")
+    issues = [i for i in data.get("issues", []) if not report_issue(i, data["observerId"])
+              and (cycle is None or timestamp(i.get("createdAt")) is None or timestamp(i["createdAt"]) >= cycle)]
+    review_ids = {a["id"] for a in data.get("agents", []) if a.get("name") == "Solution Reviewer"}
+    review_wait = any(i.get("assigneeAgentId") in review_ids and i.get("status") in OPEN for i in issues)
     runs = {r["id"]: r for r in data.get("runs", [])}
     costs = {r["agentId"]: r for r in data.get("costs", [])}
     findings, rows = [], []
@@ -117,12 +123,20 @@ def analyze(data, baseline=None, now=None):
         hb = (agent.get("runtimeConfig") or {}).get("heartbeat") or {}
         open_assigned = [i for i in assigned if i.get("status") in OPEN]
         expected_wait = status in {"paused", "terminated"} or (not live and bool(open_assigned) and all(i.get("status") == "blocked" for i in open_assigned))
+        expected_wait = expected_wait or (agent.get("name") == "CTO" and not live and review_wait)
         stalled = False
         repeating = False
         if status in {"paused", "terminated"} and live:
             add("paused_agent_with_active_run", "warning", aid)
         if status == "error":
             add("agent_error", "warning", aid)
+        failed = [r for r in recent if r.get("status") in {"failed", "timed_out"}]
+        if failed and recent and recent[0]["id"] == failed[0]["id"]:
+            error = str(failed[0].get("error") or "").lower()
+            if any(word in error for word in ("credits", "afford", "payment required")):
+                add("provider_credit_rejection", "warning", aid, issue_id(failed[0]), failed[0]["id"])
+            elif len(recent) >= 3 and all(r.get("status") in {"failed", "timed_out"} for r in recent[:3]):
+                add("repeated_run_failures", "warning", aid, issue_id(failed[0]), failed[0]["id"])
         for run in live:
             target = next((i for i in assigned if i["id"] == issue_id(run)), None)
             waiting = target is not None and target.get("status") == "blocked"
@@ -160,6 +174,13 @@ def analyze(data, baseline=None, now=None):
                           and elapsed(now, i.get("createdAt")) is not None and elapsed(now, i["createdAt"]) >= 1200]
             for issue in older_open:
                 add("unfinished_watchdog_report", "warning", aid, issue["id"])
+            completed = [i for i in data.get("issues", []) if report_issue(i, aid) and i.get("status") == "done"]
+            completed.extend(data.get("completedReports", []))
+            latest = max((i.get("createdAt") or "" for i in completed), default=None)
+            if latest and elapsed(now, latest) is not None and elapsed(now, latest) >= 1320:
+                add("overdue_watchdog_report", "warning", aid)
+            elif latest is None and "completedReports" in data:
+                problems.append("completed_watchdog_report_unavailable")
         if agent.get("name") in {"CTO", "WatchDog"} and hb.get("enabled") and status not in {"paused", "terminated"}:
             timers = [r for r in recent if r.get("invocationSource") == "timer"]
             age = elapsed(now, timers[0].get("createdAt")) if timers else None

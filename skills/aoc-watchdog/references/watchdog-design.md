@@ -1,6 +1,6 @@
 # WatchDog design and research
 
-Sources checked October 10, 2026. This is the design rationale for the independent
+Sources checked October 11, 2026. This is the design rationale for the independent
 AoC company observer, not a claim that monitoring can prove all agents healthy.
 
 ## Recommendations applied
@@ -9,7 +9,7 @@ AoC company observer, not a claim that monitoring can prove all agents healthy.
 | --- | --- | --- |
 | [Google SRE][sre] | Keep monitoring simple, distinguish symptoms from causes, and reduce noise with actionable evidence. | Report observed stalls, failures, and consumption separately from suspected causes; recognize intended waits. |
 | [OpenHands stuck detector][openhands] | Detect repeated action/observation pairs, repeated errors, and alternating cycles in bounded recent event windows. | Compare stable structured signatures; ignore incidental IDs and timestamps, and avoid counting log chatter as a loop. |
-| [Anthropic effective agents][agents] | Use environmental feedback and explicit stopping conditions; complexity has cost and latency tradeoffs. | Combine a deterministic collector with an interpreting agent, hard time bounds, and no recursive tasks or corrective authority. |
+| [Anthropic effective agents][agents] | Use environmental feedback and explicit stopping conditions; complexity has cost and latency tradeoffs. | Use a deterministic reporting workflow with optional bounded interpretation, hard phase deadlines, and no corrective authority. |
 | [Anthropic long-running harnesses][harnesses] | Durable progress artifacts help successive sessions understand and verify completed work. | Persist compact snapshots and evidence links on fresh report tasks; inspect actual work products before declaring useful progress. |
 
 These sources support the patterns, not the selected numerical thresholds.
@@ -38,7 +38,7 @@ activation requires an explicit later deployment step.
 The stdlib-only collector bundled with the company's `aoc-watchdog` skill uses GET requests exclusively. It
 collects active issues and recently completed issues, active runs and ten recent
 runs per agent, and recorded per-agent usage since UTC midnight. It inspects at
-most three anomalous runs, up to 100 events and a 32 KiB log tail for each.
+most three anomalous runs (active suspects first, then newest unrecovered failures), up to 100 events and a 32 KiB log tail for each.
 Responses are capped at 1 MiB, collection at 60 seconds, each network operation
 at five seconds, and output at 32 KiB. One network retry is allowed for safe GETs;
 HTTP errors and redirects do not trigger retries. It never prints raw log bodies.
@@ -61,7 +61,7 @@ Each actual monitoring run creates a fresh self-assigned report, with run identi
 used to reconcile retries. A continuation of that same run uses the same report.
 Write a complete report even when findings are critical; `done` describes the
 monitoring task, not the company's health. The agent only writes its own current
-report. It neither edits another task nor closes older unfinished reports.
+report by creating it already done. It neither edits another task nor closes older unfinished reports.
 
 Intentional pauses, idle agents, recorded external blockers, rate-limit waits,
 and the review-to-CTO wait are not stalls. New work on different parts concurrently,
@@ -98,3 +98,32 @@ assignment-triggered run. The implementation itself performs no live activation.
 [openhands]: https://github.com/OpenHands/software-agent-sdk/blob/main/openhands-sdk/openhands/sdk/conversation/stuck_detector.py
 [agents]: https://www.anthropic.com/engineering/building-effective-agents
 [harnesses]: https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents
+
+## October 11 failure evidence and repair
+
+At the investigation snapshot, 72 runs comprised 56 failures and 16 timeouts,
+with no successful runs. Provider-credit rejection occurred before reports could
+be created. A sampled timed-out run received
+`cross_issue_influence_run_context_required` during report updates: timer runs
+have no source issue, and checkout does not establish one. The collector also
+expected top-level tool events instead of Paperclip's nested `chunk` log format;
+its old fixture hid that defect. Preparation/tool loops consumed the runtime.
+
+The repair moves lifecycle control to an executable adapter wrapper. It creates
+a completed self-assigned report after collection, using server-supported
+idempotency and bounded reconciliation instead of source-less timer PATCHes.
+Partial checks complete with explicit gaps; failed persistence fails the run.
+Flash interprets only new/changed anomalies, with no tools, a 30-second deadline,
+and 2,048 output tokens. Failures trigger an hour-long model cooldown. These are
+engineering defaults; a lower token allowance does not guarantee credit access.
+
+[Prometheus alerting practices][prometheus] recommend monitoring the monitoring
+system and using external black-box checks to catch shared infrastructure
+failures. This version records overdue reports internally but defers external
+monitoring. It cannot persist evidence during a Paperclip outage or independently
+detect its own total absence. [OpenRouter parameters][parameters] establish the
+explicit completion-token limit; reasoning can consume that allowance and leave
+empty content, which must fall back to the deterministic report.
+
+[prometheus]: https://prometheus.io/docs/practices/alerting/
+[parameters]: https://openrouter.ai/docs/api_reference/parameters

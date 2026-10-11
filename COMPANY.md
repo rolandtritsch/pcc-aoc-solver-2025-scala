@@ -15,14 +15,17 @@ goals:
 ---
 
 AoC Solver 2025 works through [Advent of Code 2025][aoc] in the
-[scala3-aoc-2025][repo] repository. The CTO selects one unfinished part on each
-manual or timer wake-up from `sbt run` and `sbt test` on the synchronized
-repository. Historical tasks are informational only. ProblemGatherer obtains
+[scala3-aoc-2025][repo] repository. The CTO first waits for all current-cycle work and its successful review to
+complete. Only then does a manual or timer wake select one unfinished part from
+`sbt run` and `sbt test` on the synchronized repository. Pre-cycle history is
+informational; current-cycle review completion gates advancement. ProblemGatherer obtains
 missing material, ProblemSolver implements the assigned part, and
 ProblemSubmitter submits its verified answer.
 SolutionReviewer examines every accepted or rejected attempt and implements
 validated workflow improvements. Review ends the cycle; only a later CTO wake-up
-may authorize another part or a repair.
+may authorize another part after successful review, or the same part after a
+completed rejection review. No later part starts while the current review is
+unfinished.
 
 The order is Day01 part1, Day01 part2, Day02 part1, and so on through Day12.
 The final day's completion interaction follows the authenticated site rather
@@ -31,7 +34,8 @@ The CTO heartbeat interval is five minutes; it starts **paused** and is enabled
 only explicitly.
 Model Tester remains a manually assigned probe outside the puzzle pipeline.
 WatchDog has no manager and observes all agents every ten minutes when enabled.
-It writes a fresh self-assigned report per monitoring run and takes no corrective
+Its deterministic runner creates one completed self-assigned report per timer
+run, with optional Flash interpretation of new anomalies, and takes no corrective
 actions. Its reporting tasks are outside the puzzle pipeline.
 
 [aoc]: https://adventofcode.com/2025

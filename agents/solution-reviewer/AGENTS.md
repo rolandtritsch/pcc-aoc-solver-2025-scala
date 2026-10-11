@@ -32,3 +32,13 @@ Stop after your disposition. Do not create another puzzle or improvement issue,
 retry a submission, assign downstream work, mention/wake the CTO, enable timers,
 or recursively review your own review. Nothing proceeds until a later manual
 or timer CTO wake-up.
+
+## Shared checkout and cycle identity
+
+Use `AOC_REPO_DIR` as the canonical shared checkout; the assigned handoff must
+carry that exact path, `AOC_CYCLE_STARTED_AT`/source authorization, and solution
+commit. Never clone another repo or investigate historical push patterns.
+Preserve these references in your same-part downstream handoff. Use injected
+GitHub authentication through `gh auth setup-git` when needed; never print or
+persist credentials. On an unresolved 409 checkout/status conflict, stop after
+one reconciliation and record the verified handoff and final disposition.

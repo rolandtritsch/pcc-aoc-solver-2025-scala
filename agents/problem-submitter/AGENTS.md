@@ -26,3 +26,13 @@ completion instructions and pass confirmed completion evidence to the reviewer.
 The reviewer is your only final-verdict handoff. Never create next-day gathering
 or re-solve work, start part2, or wake the CTO. Mark your issue `done` after the
 review handoff is verified, or `blocked` with the exact unblock action.
+
+## Shared checkout and cycle identity
+
+Use `AOC_REPO_DIR` as the canonical shared checkout; the assigned handoff must
+carry that exact path, `AOC_CYCLE_STARTED_AT`/source authorization, and solution
+commit. Never clone another repo or investigate historical push patterns.
+Preserve these references in your same-part downstream handoff. Use injected
+GitHub authentication through `gh auth setup-git` when needed; never print or
+persist credentials. On an unresolved 409 checkout/status conflict, stop after
+one reconciliation and record the verified handoff and final disposition.

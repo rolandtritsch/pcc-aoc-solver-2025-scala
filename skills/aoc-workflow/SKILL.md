@@ -15,16 +15,34 @@ rejected attempts both end at the reviewer. Only a later CTO wake-up can start
 part2, the next day, or a repair. Order parts by day first, then part, through
 Day12; Day00 is a template. Specialist notifications are not advancement triggers.
 
-The CTO first synchronizes the solution branch with origin: fetch, fast-forward
+The CTO command wrapper `scripts/aoc_cto.py` runs the gate before launching
+OpenCode, avoiding inference entirely while the current cycle is busy.
+The CTO also runs `scripts/aoc_cycle_gate.py` from this skill directory before
+selection and immediately before creating work.
+Current-cycle tasks at or after `AOC_CYCLE_STARTED_AT` gate execution: any
+unfinished stage or missing successful review means exit before looking for
+more work. The helper is read-only, paginated, bounded to 20 seconds, and fails
+closed on unavailable/ambiguous evidence. WatchDog and Model Tester do not gate
+the puzzle cycle. A completed rejected review permits same-part repair only.
+
+After the gate clears, the CTO synchronizes the solution branch with origin: fetch, fast-forward
 pull incoming commits, push outgoing committed work, and verify clean
 local/tracking/remote equality. Dirty or divergent work requires reconciliation
 without discarding files or force-pushing. Then **only `sbt run` and `sbt test`**
 determine its next part or code repair, in day/part order. Day00-only output means
 Day01 part1. Missing/failed/ambiguous relevant command evidence is unfinished;
-old task statuses, acceptances, and reviews cannot advance or block selection.
+pre-cycle task statuses, acceptances, and reviews cannot advance or block
+selection. Current-cycle review completion must clear the gate first.
 Historical tasks provide context, and current-cycle tasks prevent duplicate
 execution only after command-based selection. Do not mistake an old blocked
 issue for current-cycle work.
+
+Use `AOC_REPO_DIR` for the canonical shared checkout, never a warmup or
+per-agent clone. Carry its exact path and the cycle start in every handoff.
+Gatherer commits material there; solver can push both material and solution
+commits. Reviewer commits improvements there; CTO pushes them on its next
+gate-cleared synchronization. If HTTPS push needs credentials, use the injected
+`GH_TOKEN` through `gh auth setup-git`; never write tokens into URLs or files.
 
 Read the checkout's `AGENTS.md` and applicable `skills/*/SKILL.md` before work.
 Reviewer improvements live and are committed in `scala3-aoc-2025`: reusable
@@ -80,6 +98,12 @@ interpolated multiline shell strings.
    and recommendations for the next CTO cycle. Verify the returned status.
 5. On a blocker, PATCH `status: "blocked"` with its exact reason, owner, and
    concrete unblock action. A comment alone does not complete a task.
+
+On a 409 run-ownership conflict, reconcile checkout once with the current
+run ID. If it still fails, stop retries and record the exact final disposition
+and verified downstream issue so the board can reconcile the stranded status.
+Use `unblockDescriptor` (owner and concrete action) or an actual blocker link
+when setting `blocked`; a reason-only update can be rejected.
 
 All requests use `Authorization: Bearer $PAPERCLIP_API_KEY` and the injected
 `PAPERCLIP_API_URL`/`PAPERCLIP_COMPANY_ID`. Mutations also require

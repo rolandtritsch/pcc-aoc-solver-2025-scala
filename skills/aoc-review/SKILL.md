@@ -60,6 +60,16 @@ Publish the report in the review issue's comment or document before disposition:
 - Improvement file paths, commit hashes, validation evidence, and adoption limits.
 - Next CTO recommendation, including any unresolved repair or evidence gap.
 
+Also write this fenced JSON in the final review comment (use actual values):
+
+```aoc-review-result
+{"reviewIssueId":"<current issue UUID>","day":1,"part":1,"solutionCommit":"<reviewed commit>","accepted":true,"repairRequired":false}
+```
+
+Set `accepted` only from authoritative site evidence; record `repairRequired`
+for an unresolved rejection/defect. A `done` status alone cannot clear the CTO
+gate. An unfinished review or failed final status write keeps the cycle waiting.
+
 Mark the review `done` when its report and any chosen validated improvements are
 complete. A rejection review may finish with a recorded pending solver repair;
 that part is not complete. Missing required evidence keeps the review `blocked`.

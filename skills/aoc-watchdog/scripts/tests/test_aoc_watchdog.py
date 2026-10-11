@@ -300,8 +300,9 @@ class CollectionTest(unittest.TestCase):
     def test_opencode_log_repetition_and_correct_event_cursor(self):
         client, data = self.fake_client()
         data["runs"][0].update(lastUsefulActionAt=ago(25), logBytes=40000)
-        logs = "\n".join(json.dumps({"type": "tool_use", "part": {"tool": "bash", "state": {
-            "status": "error", "input": {"cmd": "same"}, "error": "SECRET"}}}) for _ in range(3))
+        logs = "\n".join(json.dumps({"ts": "2026-10-11T07:00:00Z", "stream": "stdout", "seq": n,
+            "chunk": json.dumps({"type": "tool_use", "part": {"tool": "bash", "state": {
+                "status": "error", "input": {"cmd": "same"}, "error": "SECRET"}}})}) for n in range(3))
         def get(path, params=None):
             if path.endswith("/log"):
                 self.assertEqual(params["limitBytes"], 32768)
@@ -313,6 +314,28 @@ class CollectionTest(unittest.TestCase):
         self.assertNotIn("SECRET", encode(analyze(collected, now=NOW)))
         call = next(c for c in client.rows.call_args_list if c.args[0].endswith("/events"))
         self.assertEqual(call.args[1]["afterSeq"], 249)
+
+    def test_newest_failure_selected_and_recovered_history_skipped(self):
+        client, data = self.fake_client()
+        data["runs"][:] = [{"id": f"failed-{n}", "agentId": "solver", "status": "failed", "createdAt": ago(n), "logBytes": 0} for n in range(1, 5)]
+        client.get.return_value = {"companyId": "company", "nextEventSeq": 10}
+        collect(client, "watchdog", "current", NOW)
+        self.assertEqual(client.get.call_args_list[0].args[0], "/api/heartbeat-runs/failed-1")
+        self.assertEqual(client.get.call_count, 1)
+        data["runs"].insert(0, {"id": "recovered", "agentId": "solver", "status": "succeeded", "createdAt": ago(0)})
+        client.get.reset_mock()
+        collect(client, "watchdog", "current", NOW)
+        client.get.assert_not_called()
+
+    def test_partial_malformed_and_unsupported_log_records_are_unknown(self):
+        client, data = self.fake_client()
+        data["runs"][0].update(lastUsefulActionAt=ago(25), logBytes=40000)
+        client.get.side_effect = lambda path, params=None: ({"content": 'partial-line\n' + json.dumps({"chunk": "not-json"}) + '\n' + json.dumps({"chunk": json.dumps({"type": "text"})})}
+                                                            if path.endswith("/log") else {"companyId": "company", "nextEventSeq": 10})
+        result = collect(client, "watchdog", "current", NOW)
+        self.assertIn("log_window_partial:run", result["coverage"])
+        self.assertIn("action_result_evidence_unavailable:run", result["coverage"])
+        self.assertIsNone(event_patterns(result["events"]["run"]))
 
     def test_pagination_truncation_explicit(self):
         client, _ = self.fake_client()
