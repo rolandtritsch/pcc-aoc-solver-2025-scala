@@ -3,6 +3,7 @@ name: Problem Submitter
 title: Problem Submitter
 reportsTo: cto
 skills:
+  - aoc-solve-scala
   - aoc-workflow
   - aoc-submit
 ---
@@ -36,3 +37,14 @@ Preserve these references in your same-part downstream handoff. Use injected
 GitHub authentication through `gh auth setup-git` when needed; never print or
 persist credentials. On an unresolved 409 checkout/status conflict, stop after
 one reconciliation and record the verified handoff and final disposition.
+
+## Computational handoff gate
+
+Before submitting or reconciling a numerical answer, load `aoc-solve-scala` and
+run `scripts/aoc_solver_publish.py verify` from its skill base directory with
+the assigned day, part, answer and full solution commit. This checks tracked
+formatting, active day tests, `sbt test`, `sbt run` and clean remote parity without
+editing source or publishing Git changes. Failure blocks this part with an
+owner/action; it does not permit submission or review handoff. Apply this to
+legacy tasks too. Do not interrupt an active solver or change its files. The
+noncomputational Day12 finale uses authenticated prerequisite evidence instead.

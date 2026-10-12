@@ -20,9 +20,13 @@ parts; do not implement an unassigned part just because its statement is present
 On rejection, read the exact verdict and review findings, reproduce the defect,
 add a regression test, fix, and reverify. Do not guess another answer.
 
-Create or reuse a top-level ProblemSubmitter issue for this same day and part,
-carrying answer, commit, command/test evidence, and upstream links. Verify the
-handoff before marking your issue `done`. Report blockers with an owner/action.
+Use `aoc-solve-scala`'s mandatory `scripts/aoc_solver_publish.py publish`
+helper to format even untracked new files, verify the exact answer and active
+assigned-day tests, commit intended files, verify the committed formatting,
+push, confirm clean HEAD/tracking/live-remote equality, and only then create or
+reuse the same-part Problem Submitter issue. Never create a submitter task before
+successful publication. Record the helper's receipt and confirmed handoff before
+marking your issue `done`. Do not bypass this gate with manual Git/API commands. Report blockers with an owner/action.
 Do not start another part or wake the CTO.
 
 ## Shared checkout and cycle identity

@@ -39,8 +39,10 @@ issue for current-cycle work.
 
 Use `AOC_REPO_DIR` for the canonical shared checkout, never a warmup or
 per-agent clone. Carry its exact path and the cycle start in every handoff.
-Gatherer commits material there; solver can push both material and solution
-commits. Reviewer commits improvements there; CTO pushes them on its next
+Gatherer commits material there. The solver must use the `aoc-solve-scala`
+publication helper to verify, commit and push material/solution commits before
+creating a submitter handoff; it records exact remote parity and command evidence.
+A locally committed solution alone does not permit a handoff. Reviewer commits improvements there; CTO pushes them on its next
 gate-cleared synchronization. If HTTPS push needs credentials, use the injected
 `GH_TOKEN` through `gh auth setup-git`; never write tokens into URLs or files.
 
@@ -70,6 +72,14 @@ Do not assume acceptance from "already completed" or "wrong level" responses.
 If evidence is unavailable, report it as unavailable rather than resetting history.
 
 ## Paperclip handoffs
+
+Solver-to-submitter creation is exclusively through
+`aoc-solve-scala/scripts/aoc_solver_publish.py publish`, after its publication
+checks. The general API procedure below applies to other stage handoffs and to
+recording the solver's confirmed handoff/status; it is not a solver bypass.
+Submitter must independently run the helper's `verify` mode before any numerical
+submission or acceptance reconciliation. A failed gate blocks the current part.
+
 
 Use the runtime's Paperclip coordination skill for checkout/authentication.
 Never hard-code agent UUIDs or API URLs, and never print credentials. This

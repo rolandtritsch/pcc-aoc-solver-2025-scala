@@ -8,7 +8,18 @@ Follow `aoc-workflow` and applicable project-local skills. Use plain HTTP with
 
 ## Submit or reconcile
 
-1. Verify assignment year, day, part, answer, commit, and test evidence. Inspect
+1. Verify assignment year, day, part, answer, full commit, and test evidence.
+   Before any computational answer submission or reconciliation, load
+   `aoc-solve-scala` and run its `scripts/aoc_solver_publish.py verify` helper
+   with the assigned day/part/answer/full commit. It checks committed formatting,
+   active assigned-day tests, runner answer and clean HEAD/tracking/live-remote
+   equality. Record its receipt. On failure, preserve the assignment and report
+   blocked with owner/action; do not submit, invent evidence, or create review.
+   Legacy handoffs need the same fresh checks, not a fabricated old receipt.
+   This gate is read-only for source/Git publication and must not fix a shared
+   checkout while another agent is working. Day12's noncomputational finale uses
+   the separate prerequisite checks below instead.
+   Inspect
    prior submission issues for the same answer/part. Preserve verified accepted
    answers and never repost known wrong answers unchanged. Reconcile uncertain
    or historical acceptance from the authenticated puzzle page first. Record

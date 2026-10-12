@@ -40,6 +40,13 @@ from `sbt run` and `sbt test`. Day00-only output selects Day01 part1. Pre-cycle
 tasks are informational; current-cycle reviews gate advancement. Submission
 confirms existing acceptance without posting the same answer again.
 
+The solver's publication helper explicitly formats new untracked Scala files,
+verifies tests and the runner answer, commits intended files, rechecks committed
+formatting, pushes, and verifies clean local/tracking/live-remote equality before
+it creates the submitter task. Submitter independently checks that committed
+handoff before site interaction. Failed checks block the part; shell pipelines
+cannot hide process failures. See the [solver skill][solver-publication].
+
 Skills: `aoc-workflow`, `aoc-gather`, `aoc-solve-scala`, `aoc-submit`, `aoc-review`,
 `aoc-watchdog`.
 See the [shared workflow][workflow], [review skill][review], and
@@ -234,3 +241,5 @@ workspace, and paused/heartbeat settings.
 [watchdog-telemetry]: skills/aoc-watchdog/references/telemetry.md
 
 [audit]: reports/2026-10-11-audit.md
+
+[solver-publication]: skills/aoc-solve-scala/SKILL.md

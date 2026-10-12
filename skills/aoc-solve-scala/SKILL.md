@@ -28,15 +28,65 @@ is a style reference, not a path template: this repository uses sbt layout.
 4. Ensure `src/main/scala/aoc2025/Main.scala` executes and labels the assigned
    part as `DayNN - partP: <answer>`. Unimplemented other parts may remain
    placeholders until assigned, but must never be treated as solved.
-5. Verify tool versions from `.tool-versions` and `build.sbt`; use the repository's
-   asdf setup if missing. Run `sbt scalafmtAll`, `sbt test`,
-   `sbt scalafmtCheckAll`, and `sbt run`. All must succeed before committing.
-   For multiple sbt commands use one semicolon-separated command string.
-   Record the assigned part's exact answer and meaningful test results.
-6. Commit only intended files with a focused `DayNN: solve part P` or repair
-   message. Never commit a red build. Create/reuse a same-part submitter issue
-   with answer, commit, sample/edge results, verification, and upstream links.
-   Verify the handoff before marking your issue done.
+5. Use the mandatory [publication helper][publisher] below. It explicitly
+   formats intended Scala files, including untracked new files, runs formatting
+   verification, the assigned day tests, `sbt test`, and `sbt run`, and checks the
+   exact answer. It preserves real process exit codes without shell pipelines.
+6. The helper commits only the intended solution/test/sample/Main files,
+   rechecks formatting on the committed tree, pushes normally, verifies clean
+   HEAD/tracking/live-remote equality, and only then creates or reuses the
+   same-part submitter task. Do not create that task or mark solve done earlier.
+
+## Mandatory publication and handoff gate
+
+Prepare a JSON file in the run scratch directory with a `description` containing
+upstream task links, cycle start, canonical checkout, sample/edge and independent
+cross-check evidence, material paths, and relevant review findings. Do not put
+credentials in it. The helper appends the exact answer, full commit hash and
+verification receipt; it resolves the submitter from the company API.
+
+Using this skill's base directory from the skill tool response:
+
+```bash
+python3 <skill-base>/scripts/aoc_solver_publish.py publish \
+  --day NN --part P --answer ANSWER --handoff /path/to/run-scratch/handoff.json
+```
+
+`AOC_REPO_DIR` and the normal Paperclip runtime variables identify the checkout,
+source task and authenticated API. The helper defaults to the assigned day's
+source, test, sample and `Main.scala`. If the sample file does not exist or is not
+intended work, supply `--files` with the exact intended subset of those paths.
+Only intended files may be dirty or staged. Additional assets require a reviewed
+extension of the gate; do not bypass it with manual Git/API commands.
+
+The machine-readable result contains `handoffIssue`, `handoffId`, answer, commit,
+and the publication checks. Record it on the source issue, then mark solve done
+using `aoc-workflow`. On any nonzero exit, preserve work, report the exact blocker
+and owner/action, and stop. A successful push without a confirmed handoff is
+unfinished: rerun the helper to reconcile its stable source-task marker. Never
+force-push or create a duplicate after an ambiguous API response.
+
+The repository's `project.git = true` excludes untracked files from ordinary
+formatting discovery. The helper uses `scalafmtOnly` for explicit paths before
+normal formatting and checks the tracked tree again after committing. Running
+checks before `git add`, then assuming that covers a later commit, is insufficient.
+Do not pipe verification through `tail`/`grep` unless failure propagation is
+explicitly preserved; the helper uses direct subprocesses instead.
+
+A downstream agent can independently check an existing computational handoff:
+
+```bash
+python3 <skill-base>/scripts/aoc_solver_publish.py verify \
+  --day NN --part P --answer ANSWER --commit FULL_SOLUTION_HASH
+```
+
+This mode fetches origin, checks committed formatting, executes the assigned day
+tests, `sbt test` and `sbt run`, and confirms the exact answer and remote parity.
+It does not edit/format source, commit, push, create issues, or change assignments.
+Missing or failed evidence blocks submission. Legacy handoffs created before this
+gate must pass this independent check; a missing old receipt alone is not failure.
+
+[publisher]: scripts/aoc_solver_publish.py
 
 ## Reviewed rejection
 
