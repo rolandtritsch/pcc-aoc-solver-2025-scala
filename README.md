@@ -83,11 +83,11 @@ Missing telemetry is unknown, and reporting alone does not stop token burn.
 
 ## Getting started
 
-From the `companies` checkout:
+From the `pcc-aoc-solver-2025` checkout:
 
 ```bash
-paperclipai company import ./aoc-solver-2025 --target new --dry-run
-paperclipai company import ./aoc-solver-2025 --target new
+paperclipai company import . --target new --dry-run
+paperclipai company import . --target new
 ```
 
 For an existing company, preview with `--target existing --company-id <id>` and
@@ -243,3 +243,33 @@ workspace, and paused/heartbeat settings.
 [audit]: reports/2026-10-11-audit.md
 
 [solver-publication]: skills/aoc-solve-scala/SKILL.md
+
+## Repository and migration
+
+This private repository contains the company package. The Scala solutions remain
+in [scala3-aoc-2025][repo]. Its company slug remains `aoc-solver-2025`.
+
+The package was extracted from `rolandtritsch/companies` at source commit
+`61a249f43b572b954c9c100401880fbdddb38d67` on October 14, 2026. All 19 AoC
+commits retain their authors, dates, and messages; extraction changed their hashes.
+This repository starts with the package contents at its root. Repository migration
+does not import the package or change the running Paperclip company.
+
+The shared [company-creator skill][creator] and its reference files come from
+[Paperclip's companies repository][upstream-companies], as present at the source
+commit above. Relative symlinks in `.claude/skills/` and `.agents/skills/` make it
+discoverable to local development agents. The multi-company `readme-updater` skill
+and its packaged archive were omitted because they maintain the old catalogue.
+The fork's additional [catalogue research][catalogues] is retained for reference.
+
+Run the existing offline checks from this repository's root:
+
+```bash
+python3 -B -m unittest discover -s skills/aoc-workflow/scripts/tests -v
+python3 -B -m unittest discover -s skills/aoc-solve-scala/scripts/tests -v
+python3 -B -m unittest discover -s skills/aoc-watchdog/scripts/tests -v
+```
+
+[creator]: skills/company-creator/SKILL.md
+[upstream-companies]: https://github.com/paperclipai/companies
+[catalogues]: docs/CATALOGS.md

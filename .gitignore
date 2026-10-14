@@ -1,0 +1,15 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.env
+.env.*
+!.env.example
+.paperclip/
+.claude/*
+!.claude/skills/
+.claude/skills/*
+!.claude/skills/company-creator
+.agents/skills/paperclip*
+.agents/skills/para-memory-files
