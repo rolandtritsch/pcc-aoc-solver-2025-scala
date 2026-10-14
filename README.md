@@ -273,3 +273,11 @@ python3 -B -m unittest discover -s skills/aoc-watchdog/scripts/tests -v
 [creator]: skills/company-creator/SKILL.md
 [upstream-companies]: https://github.com/paperclipai/companies
 [catalogues]: docs/CATALOGS.md
+
+## Season completion
+
+The 2025 edition ends at Day12. Once all 24 day/part reviews in the current
+cycle are accepted with no repair required, the CTO gate returns `complete` and
+the launcher exits successfully before inference. No further gatherer task or
+Day13 work starts. The Day12 finale is verified through authenticated site
+evidence and review, without requiring a fabricated numerical answer.

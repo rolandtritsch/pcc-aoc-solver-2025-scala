@@ -37,6 +37,10 @@ a changed solution commit. A reset requires the board to update this setting.
   current-cycle gather/solve/submit/review tasks must reach their verified final
   dispositions. An interrupted specialist or a stranded status is a current
   blocker, not permission to advance. WatchDog and Model Tester are excluded.
+- `mode: complete`: the 2025 season is finished after all 24 parts through
+  Day12, including its authenticated finale, have accepted completed reviews.
+  Exit successfully. Do not start gathering, solving, submission, or another
+  puzzle cycle. Never create Day13 work or re-fetch completed-day statements.
 - `mode: repair`: only the same reviewed part may be repaired. Never advance
   to the next part until an accepted review records no remaining puzzle repair.
 - `mode: ready`: synchronize Git, run both authority commands, and select the

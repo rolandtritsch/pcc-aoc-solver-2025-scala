@@ -135,3 +135,13 @@ and review requirements still apply. Never create Day13 work.
 
 Keep the CTO heartbeat paused until explicitly enabled. Company package updates
 and model changes do not resume paused agents or authorize live deployment.
+
+## Terminal season completion
+
+The 2025 edition ends at Day12. After all 24 day/part pairs in the current
+cycle have accepted completed reviews with no repair required, and no specialist
+run or current-cycle task remains active, the cycle gate returns `mode: complete`.
+The CTO launcher exits successfully before model inference and cannot start
+another gatherer task. Day12 part2 uses authenticated finale acceptance evidence,
+not a fabricated computation. Missing reviews, rejections, and pending repairs
+are not completion. A deliberate board reset uses a new cycle start timestamp.

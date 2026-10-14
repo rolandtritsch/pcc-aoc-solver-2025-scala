@@ -27,6 +27,56 @@ class GateTest(unittest.TestCase):
     def test_empty_company_ready(self):
         self.assertEqual(self.check([]), "ready")
 
+    def season(self):
+        rows = []
+        for day in range(1, 13):
+            for part_number in (1, 2):
+                row = issue(day=day)
+                row["id"] = f"review-{day}-{part_number}"
+                row["identifier"] = f"AOC-{day}-{part_number}"
+                row["title"] = f"AoC 2025 Day{day:02} part{part_number}: review"
+                rows.append(row)
+        return rows
+
+    def test_all_12_days_complete_without_day13(self):
+        rows = self.season()
+        def reviewed(id):
+            _, day, part_number = id.split("-")
+            import json
+            result = {"reviewIssueId": id, "day": int(day), "part": int(part_number),
+                      "solutionCommit": "abc12345678", "accepted": True, "repairRequired": False}
+            return [{"body": "```aoc-review-result\n" + json.dumps(result) + "\n```"}]
+        self.assertEqual(self.check(rows, reviewed), "complete")
+
+    def test_missing_finale_review_is_not_complete(self):
+        self.assertEqual(self.check(self.season()[:-1]), "ready")
+
+    def test_finale_review_alone_cannot_complete_season(self):
+        self.assertEqual(self.check(self.season()[-1:]), "ready")
+
+    def test_cancelled_finale_is_not_complete(self):
+        rows = self.season(); rows[-1]["status"] = "cancelled"
+        self.assertEqual(self.check(rows), "ready")
+
+    def test_unfinished_finale_waits(self):
+        rows = self.season(); rows[-1]["status"] = "in_progress"
+        self.assertEqual(self.check(rows), "wait")
+
+    def test_finale_repair_is_not_complete(self):
+        rows = self.season()
+        def comments(id):
+            if id != rows[-1]["id"]: return accepted(id)
+            return [{"body": '```aoc-review-result\n{"reviewIssueId":"review-12-2","day":12,"part":2,"solutionCommit":"abc123","accepted":false,"repairRequired":true}\n```'}]
+        self.assertEqual(self.check(rows, comments), "repair")
+
+    def test_live_specialist_after_last_review_still_waits(self):
+        self.assertEqual(self.check(self.season(), runs=[{"id":"run", "agentId":"Problem Solver"}]), "wait")
+
+    def test_old_cycle_completion_does_not_stop_new_cycle(self):
+        rows=self.season()
+        for row in rows: row["createdAt"]="2026-10-09T19:00:00Z"
+        self.assertEqual(self.check(rows), "ready")
+
     def test_active_solver_blocks_selection(self):
         self.assertEqual(self.check([issue("solve", "in_progress")]), "wait")
 

@@ -24,7 +24,7 @@ def run(args, check=check_cycle, launch=os.execv):
         if mode not in ("ready", "repair") or code not in (0, 1):
             print(json.dumps({"type": "text", "part": {"type": "text",
                              "text": "CTO preflight: " + json.dumps(result)}}))
-            return 0 if mode == "wait" and code == 1 else 2
+            return 0 if mode in ("wait", "complete") and code == 1 else 2
     binary = os.environ.get("AOC_OPENCODE_BINARY", "/usr/local/bin/opencode")
     launch(binary, [binary, *args])
     return 0

@@ -24,6 +24,11 @@ class WrapperTest(unittest.TestCase):
         self.assertEqual(wrapper.run(["run", "--model", "flash"], result("wait", 1), launch), 0)
         launch.assert_not_called()
 
+    def test_completed_season_does_not_launch_provider(self):
+        launch = Mock()
+        self.assertEqual(wrapper.run(["run", "--model", "flash"], result("complete", 1), launch), 0)
+        launch.assert_not_called()
+
     def test_unknown_evidence_fails_without_provider(self):
         launch = Mock()
         self.assertEqual(wrapper.run(["run"], result("unknown", 2), launch), 2)

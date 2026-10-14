@@ -13,6 +13,7 @@ STAGES = {
     "Problem Gatherer": "gather", "Problem Solver": "solve",
     "Problem Submitter": "submit", "Solution Reviewer": "review",
 }
+SEASON_PARTS = {(day, part) for day in range(1, 13) for part in (1, 2)}
 OPEN = {"backlog", "todo", "in_progress", "in_review", "blocked"}
 
 
@@ -68,6 +69,7 @@ def evaluate(issues, agents, since, comments, live_runs):
         if not stage:
             continue
         groups.setdefault(part(issue), []).append((stage, issue))
+    accepted_parts = set()
     for selected in sorted(groups):
         entries = groups[selected]
         if all(i["status"] == "cancelled" for _, i in entries):
@@ -84,10 +86,14 @@ def evaluate(issues, agents, since, comments, live_runs):
         if result != "accepted":
             return {"mode": "repair" if result == "repair" else "wait", "part": selected,
                     "issues": [latest["identifier"]], "reason": "review has not cleared advancement"}
+        if selected in SEASON_PARTS:
+            accepted_parts.add(selected)
     running = [r["id"] for r in live_runs
                if names.get(r.get("agentId")) in STAGES]
     if running:
         return {"mode": "wait", "runs": running, "reason": "specialist run is still active"}
+    if accepted_parts == SEASON_PARTS:
+        return {"mode": "complete", "reason": "All 24 parts through Day12 have accepted completed reviews; season finished"}
     return {"mode": "ready", "reason": "all current-cycle parts have successful completed reviews"}
 
 
