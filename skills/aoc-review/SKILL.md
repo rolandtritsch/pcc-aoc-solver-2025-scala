@@ -70,8 +70,23 @@ Set `accepted` only from authoritative site evidence; record `repairRequired`
 for an unresolved rejection/defect. A `done` status alone cannot clear the CTO
 gate. An unfinished review or failed final status write keeps the cycle waiting.
 
-Mark the review `done` when its report and any chosen validated improvements are
-complete. A rejection review may finish with a recorded pending solver repair;
+### Result-block self-check (blocking)
+
+A review without a valid result block is defective and stalls the whole
+cycle: on 2026-10-15 a prose-only accepted review held up advancement for
+5 hours because the gate could not clear it. Before marking the
+review `done`:
+
+1. Confirm the final comment carries the fenced block with actual values,
+   never the `<...>` placeholders.
+2. Run `scripts/verify_review_block.py --issue-id <UUID> --title "<issue
+   title>"` with the comment body on stdin; it exits non-zero naming the
+   exact defect (missing block, bad JSON, review/day/part/commit mismatch).
+3. Mark `done` only on exit 0. A failing check keeps the review open and
+   recorded — never mark a block-less review `done`.
+
+Mark the review `done` when its report, any chosen validated improvements,
+and the passing result-block self-check are complete. A rejection review may finish with a recorded pending solver repair;
 that part is not complete. Missing required evidence keeps the review `blocked`.
 Do not create downstream work, mention/wake CTO, submit answers, enable timers,
 or start another part. Stop; only a later manual or timer CTO wake-up proceeds.
