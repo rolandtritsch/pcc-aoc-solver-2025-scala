@@ -353,6 +353,28 @@ solution searches in the agent's recorded tools.
    it is a recommendation, not a change made by this report. Keep current-run
    part1 code available for part2 and retain appropriate project helpers.
 
+## Addendum (2026-10-15) — outlier re-examination across languages
+
+The Days01–09 comparison confirms the §“2. Day09 part2” analysis above and adds
+two findings.
+
+First, run `3cfc54de` was preceded by an overlapping assignment run `3f3fba56`
+on the same issue (10:59:53–11:02:13 UTC, 121,502 fresh tokens) while the main
+run started 11:01:52 UTC. This looks like a restarted or duplicated session
+whose context carried into the main run, inflating its totals beyond the
+geometry work itself.
+
+Second, the Python outlier is a different mechanism. Day03 part2
+([AOCA-33](https://paperclip.tritsch.org/AOCA/issues/AOCA-33), run
+`d950b496`) recorded 472,212 fresh input tokens with a fresh/cache ratio of
+**1.31** — the only solver run in either language where fresh exceeds cached —
+at ordinary duration (383s) and output (15k). Its solver cross-checked the
+monotonic-stack solution against exhaustive combinations brute force on the
+samples plus 2000 random banks, and that verification output flooded the
+context as fresh tokens. So: Python's outlier is *context churn*, Scala's
+Day09 part2 is *session scale*. Both bought accepted solutions (code-quality
+5.0 and 4.4 respectively) — correctness at inefficient token cost.
+
 ## Evidence and reproducibility
 
 - [Per-part CSV][part-csv] contains exact UTC start/end timestamps, durations in
