@@ -1,0 +1,37 @@
+day,part,lang,correctness,readability,idioms,test_depth,efficiency,mean,band,src_loc,test_loc,notes
+1,1,python,5,5,5,5,5,5.0,5,118,146,O(1) zero_clicks math; NamedTuple; full docstrings
+1,2,python,5,5,5,5,5,5.0,5,118,146,O(1) per-rotation click count; no simulation
+1,1,scala,5,5,5,4,5,4.8,5,133,87,enum Direction(delta); floorMod; foldLeft
+1,2,scala,5,5,5,4,5,4.8,5,133,87,closed-form zeroHits; O(n) fold
+2,1,python,4,5,5,4,3,4.2,4,119,184,brute-force range scan O(T); clear predicates
+2,2,python,4,5,5,4,3,4.2,4,119,184,divisor-prefix check O(d^2); same scan
+2,1,scala,4,4,5,3,3,3.8,4,125,104,flatMap range iterator; even-half check
+2,2,scala,4,4,5,3,3,3.8,4,125,104,functional period check; same scan
+3,1,python,5,5,5,5,5,5.0,5,98,154,suffix-max O(n); optimal vs naive
+3,2,python,5,5,5,5,5,5.0,5,98,154,monotonic stack O(n); canonical
+3,1,scala,4,4,4,3,3,3.6,4,127,71,O(n^2) pair enumeration; correct but suboptimal
+3,2,scala,5,4,4,3,5,4.2,4,127,71,monotonic stack O(n); mutable Stack+var
+4,1,python,5,5,5,5,5,5.0,5,137,139,O(R*C) neighbour count; named constants
+4,2,python,5,5,5,5,5,5.0,5,137,139,queue cascade O(R*C); monotone proof in docstring
+4,1,scala,5,5,5,3,5,4.6,5,131,76,for-comprehension + adjacentRolls; O(R*C)
+4,2,scala,4,4,4,3,3,3.6,4,131,76,"round-based rebuild O((R*C)^2); correct, slower"
+5,1,python,5,5,5,5,5,5.0,5,123,188,merge+bi sect O(n log n+m log n); Database type
+5,2,python,5,5,5,5,5,5.0,5,123,188,merged-interval length sum; shared helper
+5,1,scala,4,4,4,3,3,3.6,4,136,101,"O(r*a) exists scan; fine at 182x1000, asymptotically naive"
+5,2,scala,5,5,5,3,5,4.6,5,136,101,mergedRanges foldLeft O(r log r); elegant
+6,1,python,5,4,4,5,4,4.4,4,168,200,whitespace-split worksheet; math.prod fold
+6,2,python,4,4,4,5,4,4.2,4,168,200,column-block scan; dense but documented
+6,1,scala,4,4,4,3,4,3.8,4,179,69,padded grid + while scan; Problem case class
+6,2,scala,4,4,4,3,4,3.8,4,179,69,right-to-left column read; duplicated loop
+7,1,python,5,5,5,5,5,5.0,5,116,211,active-set merge O(R*C); exact S validation
+7,2,python,5,5,5,5,5,5.0,5,116,211,per-column counts; no-merge timelines; O(R*C)
+7,1,scala,4,4,4,3,4,3.8,4,119,65,active Set; var loop; start-column require
+7,2,scala,4,4,4,3,4,3.8,4,119,65,Map counts Long; same loop shape
+8,1,python,4,4,4,4,4,4.0,4,151,151,heap DSU O(N^2 log N); find inline
+8,2,python,4,4,4,4,4,4.0,4,151,151,duplicated DSU; tie-break by index
+8,1,scala,4,4,5,3,4,4.0,4,199,51,union-find + sorted pairs; squared Long
+8,2,scala,4,4,5,3,4,4.0,4,199,51,full-merge loop; duplicated DSU
+9,1,python,4,5,5,4,4,4.4,4,204,167,O(N^2) pair max; helper area
+9,2,python,5,4,5,4,5,4.6,5,204,167,compressed-region + cache O(N^2 log N); intricate
+9,1,scala,4,4,4,3,4,3.8,4,265,45,O(n^2) pair scan; area helper
+9,2,scala,5,4,5,3,5,4.4,4,265,45,prefix-sum + axisBlocks; even-odd inRegion
