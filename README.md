@@ -1,4 +1,4 @@
-# AoC Solver 2025
+# AoC Solver 2025 - Scala
 
 An agent company that implements tested Scala 3 solutions for both parts of
 [Advent of Code 2025][aoc] in [scala3-aoc-2025][repo], through Day12.
